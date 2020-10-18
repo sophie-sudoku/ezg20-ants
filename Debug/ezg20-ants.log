@@ -1,5 +1,2 @@
-﻿  objloader.cpp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\sophiechen\Documents\TU_WIEN\realtime_rendering\ezg20-ants\Debug\vc120.pdb'; linking object as if no debug info
-  ezg20-ants.vcxproj -> C:\Users\sophiechen\Documents\TU_WIEN\realtime_rendering\ezg20-ants\Debug\ezg20-ants.exe
+﻿  demo.cpp
+  ezg20-ants.vcxproj -> C:\Users\kecks\Source\Repos\ezg20-ants\Debug\ezg20-ants.exe

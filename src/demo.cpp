@@ -89,19 +89,19 @@ int main(void)
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 
 	// Load the texture
-	GLuint Texture = loadDDS("uvmap.DDS");
+	GLuint Texture = loadDDS("assets/textures/uvmap.DDS");
 	
 	// Get a handle for our "myTextureSampler" uniform
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
-	
+
 	// Read our .obj file
 	std::vector<unsigned short> indices;
 	std::vector<glm::vec3> indexed_vertices;
 	std::vector<glm::vec2> indexed_uvs;
 	std::vector<glm::vec3> indexed_normals;
 
-	/*
-	bool res = loadAssImp("suzanne.obj", indices, indexed_vertices, indexed_uvs, indexed_normals);
+	
+	bool res = loadAssImp("assets/obj/suzanne.obj", indices, indexed_vertices, indexed_uvs, indexed_normals);
 	
 	// Load it into a VBO
 	
@@ -244,6 +244,6 @@ int main(void)
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
-	*/
+	
 	return 0;
 }
