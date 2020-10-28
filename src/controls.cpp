@@ -20,6 +20,9 @@ glm::mat4 getProjectionMatrix() {
 }
 
 
+vec3 finalPosition = vec3(0,0,0);
+vec3 finalDirection = vec3(0,0,0);
+
 // Initial position : on +Z
 glm::vec3 position = glm::vec3(0, 0, 5);
 // Initial horizontal angle : toward -Z
@@ -31,6 +34,12 @@ float initialFoV = 45.0f;
 
 float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
+
+
+bool orbit = true;
+float orbitRadius = 10.0f;
+bool F_currently_pressed = false;
+
 
 
 
@@ -71,22 +80,69 @@ void computeMatricesFromInputs() {
 	// Up vector
 	glm::vec3 up = glm::cross(right, direction);
 
-	// Move forward
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		position += direction * deltaTime * speed;
+
+
+	//Get F key to switch between user-controlled and orbit view
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !F_currently_pressed) {
+		F_currently_pressed = true;
+		glfwSetTime(0);
+		orbit = !orbit;
 	}
-	// Move backward
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		position -= direction * deltaTime * speed;
+	else {
+		F_currently_pressed = false;
 	}
-	// Strafe right
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		position += right * deltaTime * speed;
+
+
+	if (orbit) { //orbit camera
+
+		//Go up
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			position.y += 0.01;
+		}
+		//Go down
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			position.y -= 0.01;
+		}
+		//Zoom closer
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			orbitRadius -= orbitRadius / 10000;
+		}
+		//Zoom farer
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			orbitRadius += orbitRadius / 10000;
+		}
+
+
+		//update Position/Direction depending on orbit
+		finalPosition = vec3( sin(glfwGetTime()) * orbitRadius,	position.y, cos(glfwGetTime()) * orbitRadius );
+		finalDirection = vec3(0, 0, 0);
 	}
-	// Strafe left
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		position -= right * deltaTime * speed;
+
+	else { //user controlled
+
+		// Move forward
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			position += direction * deltaTime * speed;
+		}
+		// Move backward
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			position -= direction * deltaTime * speed;
+		}
+		// Strafe right
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			position += right * deltaTime * speed;
+		}
+		// Strafe left
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			position -= right * deltaTime * speed;
+		}
+
+
+		//update Position/Direction depending on user controlled camera
+		finalPosition = position;
+		finalDirection = position + direction;
 	}
+
 
 	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
@@ -94,8 +150,8 @@ void computeMatricesFromInputs() {
 	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
-		position,           // Camera is here
-		position + direction, // and looks here : at the same position, plus "direction"
+		finalPosition,           // Camera is here
+		finalDirection, // and looks here : at the same position, plus "direction"
 		up                  // Head is up (set to 0,-1,0 to look upside-down)
 	);
 
