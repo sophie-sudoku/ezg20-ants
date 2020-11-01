@@ -23,21 +23,16 @@ public:
     GLuint MatrixID;
     GLuint ViewMatrixID;
     GLuint ModelMatrixID;
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
+    GLuint elementbuffer;
     glm::mat4 ModelMatrix = glm::mat4(1.0);
     Mesh(const char* path);
     ~Mesh();
-    void SetTexture(const char* path, GLuint& programID);
-    void SetupMesh(
-        GLuint& vertexbuffer,
-        GLuint& uvbuffer,
-        GLuint& normalbuffer,
-        GLuint& elementbuffer
-    );
+    void SetShader(GLuint& programID, const char* path);
+    void SetupMesh();
     void Draw(
-        GLuint& vertexbuffer,
-        GLuint& uvbuffer,
-        GLuint& normalbuffer,
-        GLuint& elementbuffer,
         glm::mat4 ProjectionMatrix,
         glm::mat4 ViewMatrix
     );

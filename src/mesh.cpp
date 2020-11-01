@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 #include <stdio.h>
 #include <string>
 #include <GL/glew.h>
@@ -18,12 +19,15 @@ Mesh::Mesh(
     loadAssImp(path, indices, indexed_vertices, indexed_uvs, indexed_normals);
 }
 
-void Mesh::SetupMesh(
-	GLuint& vertexbuffer,
-	GLuint& uvbuffer,
-	GLuint& normalbuffer,
-	GLuint& elementbuffer
-)
+
+Mesh::~Mesh() {
+	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &uvbuffer);
+	glDeleteBuffers(1, &normalbuffer);
+	glDeleteBuffers(1, &elementbuffer);
+}
+
+void Mesh::SetupMesh()
 {
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -43,17 +47,19 @@ void Mesh::SetupMesh(
 
 }
 
-void Mesh::SetTexture(
-	const char* path,
-	GLuint& programID
+void Mesh::SetShader(
+	GLuint& programID,
+	const char* path = ""
 )
 {
 	this->programID = programID;
 	this->MatrixID = glGetUniformLocation(programID, "MVP");
 	this->ViewMatrixID = glGetUniformLocation(programID, "V");
 	this->ModelMatrixID = glGetUniformLocation(programID, "M");
-	Texture = loadDDS("assets/textures/uvmap.DDS");
-	TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	if (path) {
+		Texture = loadDDS(path);
+		TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	}
 	LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
 }
 
@@ -65,10 +71,6 @@ void Mesh::SetTransform(
 }
 
 void Mesh::Draw(
-	GLuint& vertexbuffer,
-	GLuint& uvbuffer,
-	GLuint& normalbuffer,
-	GLuint& elementbuffer,
 	glm::mat4 ProjectionMatrix,
 	glm::mat4 ViewMatrix
 )
@@ -87,11 +89,11 @@ void Mesh::Draw(
 	glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 
 
-	// Bind our texture in Texture Unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Texture);
-	// Set our "myTextureSampler" sampler to use Texture Unit 0
-	glUniform1i(TextureID, 0);
+	if (Texture) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, Texture);
+		glUniform1i(TextureID, 0);
+	}
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
