@@ -49,6 +49,9 @@ void Mesh::SetTexture(
 )
 {
 	this->programID = programID;
+	this->MatrixID = glGetUniformLocation(programID, "MVP");
+	this->ViewMatrixID = glGetUniformLocation(programID, "V");
+	this->ModelMatrixID = glGetUniformLocation(programID, "M");
 	Texture = loadDDS("assets/textures/uvmap.DDS");
 	TextureID = glGetUniformLocation(programID, "myTextureSampler");
 	LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
@@ -67,10 +70,7 @@ void Mesh::Draw(
 	GLuint& normalbuffer,
 	GLuint& elementbuffer,
 	glm::mat4 ProjectionMatrix,
-	glm::mat4 ViewMatrix,
-	GLuint& MatrixID,
-	GLuint& ViewMatrixID,
-	GLuint& ModelMatrixID
+	glm::mat4 ViewMatrix
 )
 {
 	glUseProgram(programID);

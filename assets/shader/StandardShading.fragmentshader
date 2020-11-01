@@ -13,6 +13,7 @@ out vec3 color;
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
 uniform mat4 MV;
+uniform vec3 myColor;
 uniform vec3 LightPosition_worldspace;
 
 void main(){
@@ -58,5 +59,4 @@ void main(){
 		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
 		// Specular : reflective highlight, like a mirror
 		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
-
 }

@@ -45,6 +45,7 @@ int main(void)
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
@@ -70,11 +71,10 @@ int main(void)
 
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = LoadShaders("assets/shader/StandardShading.vertexshader", "assets/shader/StandardShading.fragmentshader");
+	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vertexshader", "assets/shader/Test.fragmentshader");
 
 	// Get a handle for our "MVP" uniform
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-	GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
-	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
+
 
 	GLuint vertexbuffer;
 	GLuint uvbuffer;
@@ -87,8 +87,9 @@ int main(void)
 	ant->SetupMesh(vertexbuffer, uvbuffer, normalbuffer, elementbuffer);
 
 	Mesh* ant2 = new Mesh("assets/models/ant.obj");
-	ant2->SetTexture("assets/textures/uvmap.DDS", programID);
+	ant2->SetTexture("assets/textures/uvmap.DDS", programID2);
 	ant2->SetupMesh(vertexbuffer, uvbuffer, normalbuffer, elementbuffer);
+	ant2->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
 	do {
 
@@ -105,22 +106,16 @@ int main(void)
 			normalbuffer,
 			elementbuffer,
 			ProjectionMatrix,
-			ViewMatrix,
-			MatrixID,
-			ViewMatrixID,
-			ModelMatrixID
+			ViewMatrix
 		);
-		ant2->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+		
 		ant2->Draw(
 			vertexbuffer,
 			uvbuffer,
 			normalbuffer,
 			elementbuffer,
 			ProjectionMatrix,
-			ViewMatrix,
-			MatrixID,
-			ViewMatrixID,
-			ModelMatrixID
+			ViewMatrix
 		);
 
 		glDisableVertexAttribArray(0);
@@ -141,6 +136,7 @@ int main(void)
 	glDeleteBuffers(1, &normalbuffer);
 	glDeleteBuffers(1, &elementbuffer);
 	glDeleteProgram(programID);
+	glDeleteProgram(programID2);
 	//glDeleteTextures(1, &Texture);
 	glDeleteVertexArrays(1, &VertexArrayID);
 

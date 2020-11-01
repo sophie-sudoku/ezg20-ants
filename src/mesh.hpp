@@ -20,6 +20,9 @@ public:
     GLuint TextureID;
     GLuint LightID;
     GLuint programID;
+    GLuint MatrixID;
+    GLuint ViewMatrixID;
+    GLuint ModelMatrixID;
     glm::mat4 ModelMatrix = glm::mat4(1.0);
     Mesh(const char* path);
     ~Mesh();
@@ -36,10 +39,7 @@ public:
         GLuint& normalbuffer,
         GLuint& elementbuffer,
         glm::mat4 ProjectionMatrix,
-        glm::mat4 ViewMatrix,
-        GLuint& MatrixID,
-        GLuint& ViewMatrixID,
-        GLuint& ModelMatrixID
+        glm::mat4 ViewMatrix
     );
     void SetTransform(
         glm::mat4 transform
