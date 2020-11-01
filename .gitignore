@@ -6,3 +6,6 @@
 
 #Debug files
 Debug/**
+
+# Visual Studio files
+.vs/

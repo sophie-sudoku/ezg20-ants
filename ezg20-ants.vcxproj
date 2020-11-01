@@ -29,10 +29,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="assets\shader\SimpleFragmentShader.frag" />
     <None Include="assets\shader\SimpleFragmentShader.fragmentshader" />
+    <None Include="assets\shader\SimpleVertexShader.vert" />
     <None Include="assets\shader\SimpleVertexShader.vertexshader" />
+    <None Include="assets\shader\StandardShading.frag" />
     <None Include="assets\shader\StandardShading.fragmentshader" />
+    <None Include="assets\shader\StandardShading.vert" />
     <None Include="assets\shader\StandardShading.vertexshader" />
+    <None Include="assets\shader\Test.frag" />
+    <None Include="assets\textures\desert_diffuse.tx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\controls.hpp" />
@@ -41,6 +47,12 @@
     <ClInclude Include="src\shader.hpp" />
     <ClInclude Include="src\texture.hpp" />
     <ClInclude Include="src\vboindexer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\desert_diffuse.png" />
+    <Image Include="assets\textures\desert_flows.png" />
+    <Image Include="assets\textures\desert_hight.png" />
+    <Image Include="assets\textures\uvmap.DDS" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
