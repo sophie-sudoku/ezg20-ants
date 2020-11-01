@@ -70,8 +70,8 @@ int main(void)
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders("assets/shader/StandardShading.vertexshader", "assets/shader/StandardShading.fragmentshader");
-	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vertexshader", "assets/shader/Test.fragmentshader");
+	GLuint programID = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
+	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/Test.frag");
 
 	// Get a handle for our "MVP" uniform
 
