@@ -70,25 +70,17 @@ int main(void)
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders("assets/shader/StandardShading.vertexshader", "assets/shader/StandardShading.fragmentshader");
-	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vertexshader", "assets/shader/Test.fragmentshader");
-
-	// Get a handle for our "MVP" uniform
-
-
-	GLuint vertexbuffer;
-	GLuint uvbuffer;
-	GLuint normalbuffer;
-	GLuint elementbuffer;
+	GLuint programID = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
+	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/Test.frag");
 
 	// Load scene
 	Mesh *ant = new Mesh("assets/models/ant.obj");
-	ant->SetTexture("assets/textures/uvmap.DDS", programID);
-	ant->SetupMesh(vertexbuffer, uvbuffer, normalbuffer, elementbuffer);
+	ant->SetShader(programID, "assets/textures/uvmap.DDS");
+	ant->SetupMesh();
 
-	Mesh* ant2 = new Mesh("assets/models/ant.obj");
-	ant2->SetTexture("assets/textures/uvmap.DDS", programID2);
-	ant2->SetupMesh(vertexbuffer, uvbuffer, normalbuffer, elementbuffer);
+	Mesh* ant2 = new Mesh("assets/models/plane.obj");
+	ant2->SetShader(programID2, NULL);
+	ant2->SetupMesh();
 	ant2->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
 	do {
@@ -101,19 +93,11 @@ int main(void)
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
 		ant->Draw(
-			vertexbuffer,
-			uvbuffer,
-			normalbuffer,
-			elementbuffer,
 			ProjectionMatrix,
 			ViewMatrix
 		);
 		
 		ant2->Draw(
-			vertexbuffer,
-			uvbuffer,
-			normalbuffer,
-			elementbuffer,
 			ProjectionMatrix,
 			ViewMatrix
 		);
@@ -131,10 +115,6 @@ int main(void)
 		glfwWindowShouldClose(window) == 0);
 
 	// Cleanup VBO and shader
-	glDeleteBuffers(1, &vertexbuffer);
-	glDeleteBuffers(1, &uvbuffer);
-	glDeleteBuffers(1, &normalbuffer);
-	glDeleteBuffers(1, &elementbuffer);
 	glDeleteProgram(programID);
 	glDeleteProgram(programID2);
 	//glDeleteTextures(1, &Texture);
