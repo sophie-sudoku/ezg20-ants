@@ -33,6 +33,9 @@
     <ClCompile Include="src\vboindexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -40,6 +43,12 @@
     <None Include="assets\shader\SimpleVertexShader.vertexshader" />
     <None Include="assets\shader\StandardShading.fragmentshader" />
     <None Include="assets\shader\StandardShading.vertexshader" />
+    <None Include="assets\textures\desert_diffuse.tx" />
+    <None Include="assets\shader\SimpleFragmentShader.frag" />
+    <None Include="assets\shader\SimpleVertexShader.vert" />
+    <None Include="assets\shader\StandardShading.frag" />
+    <None Include="assets\shader\StandardShading.vert" />
+    <None Include="assets\shader\Test.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">
@@ -57,5 +66,20 @@
     <ClInclude Include="src\vboindexer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\uvmap.DDS" />
+    <Image Include="assets\textures\desert_hight.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\desert_diffuse.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\desert_flows.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

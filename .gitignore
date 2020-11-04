@@ -3,3 +3,9 @@
 
 # Compiled Object files
 *.slo
+
+#Debug files
+Debug/**
+
+# Visual Studio files
+.vs/
