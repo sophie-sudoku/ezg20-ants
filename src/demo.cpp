@@ -10,6 +10,9 @@
 #include <GLFW/glfw3.h>
 GLFWwindow* window;
 
+#include "json/json.h"
+#include <fstream>
+
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -73,15 +76,49 @@ int main(void)
 	GLuint programID = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/Test.frag");
 
-	// Load scene
-	Mesh *ant = new Mesh("assets/models/ant.obj");
-	ant->SetShader(programID, "assets/textures/uvmap.DDS");
-	ant->SetupMesh();
+	// Get model positions from positions.json
+	std::ifstream positions_file("assets/models/positions.json");
+	std::ostringstream tmp;
+	tmp << positions_file.rdbuf();
+	std::string spositions_file_str = tmp.str();
 
-	Mesh* ant2 = new Mesh("assets/models/plane.obj");
+	Json::Value positions;
+	std::istringstream sin(spositions_file_str);
+	sin >> positions;
+	Json::StreamWriterBuilder builder;
+	builder["indentation"] = "";
+
+	// Load scene
+	Mesh *ant1 = new Mesh("assets/models/ant_sitting.obj");
+	ant1->SetShader(programID, "assets/textures/uvmap.DDS");
+	ant1->SetupMesh();
+	const std::string output = Json::writeString(builder, positions["ant1"]);
+	ant1->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+
+	Mesh* ant2 = new Mesh("assets/models/desert.obj");
 	ant2->SetShader(programID2, NULL);
 	ant2->SetupMesh();
 	ant2->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+
+	Mesh* ant3 = new Mesh("assets/models/desert.obj");
+	ant3->SetShader(programID2, NULL);
+	ant3->SetupMesh();
+	ant3->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+
+	Mesh* ant4 = new Mesh("assets/models/desert.obj");
+	ant4->SetShader(programID2, NULL);
+	ant4->SetupMesh();
+	ant4->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+
+	Mesh* ant5 = new Mesh("assets/models/desert.obj");
+	ant5->SetShader(programID2, NULL);
+	ant5->SetupMesh();
+	ant5->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+
+	Mesh* ant6 = new Mesh("assets/models/desert.obj");
+	ant6->SetShader(programID2, NULL);
+	ant6->SetupMesh();
+	ant6->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
 	do {
 
@@ -92,7 +129,7 @@ int main(void)
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-		ant->Draw(
+		ant1->Draw(
 			ProjectionMatrix,
 			ViewMatrix
 		);

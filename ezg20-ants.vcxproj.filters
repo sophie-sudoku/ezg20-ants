@@ -36,6 +36,9 @@
     <ClCompile Include="src\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dependencies\JSON\jsoncpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -49,6 +52,7 @@
     <None Include="assets\shader\StandardShading.frag" />
     <None Include="assets\shader\StandardShading.vert" />
     <None Include="assets\shader\Test.frag" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">
