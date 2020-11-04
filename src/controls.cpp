@@ -36,7 +36,7 @@ float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
 
 
-bool orbit = true;
+bool orbit = true; //TODO: Set to false for first prototype
 float orbitRadius = 10.0f;
 bool F_currently_pressed = false;
 
