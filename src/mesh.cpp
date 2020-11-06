@@ -8,8 +8,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <SOIL2.h>
+
 #include "mesh.hpp"
-#include "texture.hpp"
 #include "objloader.hpp"
 
 Mesh::Mesh(
@@ -57,7 +58,13 @@ void Mesh::SetShader(
 	this->ViewMatrixID = glGetUniformLocation(programID, "V");
 	this->ModelMatrixID = glGetUniformLocation(programID, "M");
 	if (path) {
-		Texture = loadDDS(path);
+		Texture = SOIL_load_OGL_texture // load an image file directly as a new OpenGL texture 
+		(
+			path,
+			SOIL_LOAD_AUTO,
+			SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+		);
 		TextureID = glGetUniformLocation(programID, "myTextureSampler");
 	}
 	LightID = glGetUniformLocation(programID, "LightPosition_worldspace");

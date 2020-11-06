@@ -24,11 +24,11 @@ vec3 finalPosition = vec3(0,0,0);
 vec3 finalDirection = vec3(0,0,0);
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3(0, 0, 5);
+glm::vec3 position = glm::vec3(0, 10, 5);
 // Initial horizontal angle : toward -Z
-float horizontalAngle = 3.14f;
+float horizontalAngle = -2.67f;
 // Initial vertical angle : none
-float verticalAngle = 0.0f;
+float verticalAngle = 3.14f;
 // Initial Field of View
 float initialFoV = 45.0f;
 
@@ -36,7 +36,7 @@ float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
 
 
-bool orbit = true; //TODO: Set to false for first prototype
+bool orbit = false; //TODO: Set to false for first prototype
 float orbitRadius = 10.0f;
 bool F_currently_pressed = false;
 
@@ -152,7 +152,7 @@ void computeMatricesFromInputs() {
 	ViewMatrix = glm::lookAt(
 		finalPosition,           // Camera is here
 		finalDirection, // and looks here : at the same position, plus "direction"
-		up                  // Head is up (set to 0,-1,0 to look upside-down)
+		up                // Head is up (set to 0,-1,0 to look upside-down)
 	);
 
 	// For the next frame, the "last time" will be "now"

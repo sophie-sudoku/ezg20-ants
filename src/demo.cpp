@@ -74,7 +74,7 @@ int main(void)
 
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
-	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/Test.frag");
+	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 
 	// Get model positions from positions.json
 	std::ifstream positions_file("assets/models/positions.json");
@@ -96,7 +96,7 @@ int main(void)
 	ant1->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
 	Mesh* ant2 = new Mesh("assets/models/desert.obj");
-	ant2->SetShader(programID2, NULL);
+	ant2->SetShader(programID2, "assets/textures/desert_diffuse.png");
 	ant2->SetupMesh();
 	ant2->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
