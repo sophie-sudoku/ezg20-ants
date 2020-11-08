@@ -23,9 +23,11 @@ using namespace glm;
 #include "vboindexer.hpp"
 #include "mesh.hpp"
 #include "debug.hpp"
+#include "utils.hpp"
 
 int main(void)
 {
+	//makeMat4("Thisd,is,a,test");
 	// Initialise GLFW
 	if (!glfwInit())
 	{
@@ -92,8 +94,9 @@ int main(void)
 	Mesh *ant1 = new Mesh("assets/models/ant_sitting.obj");
 	ant1->SetShader(programID, "assets/textures/uvmap.DDS");
 	ant1->SetupMesh();
-	const std::string output = Json::writeString(builder, positions["ant1"]);
-	ant1->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+	const std::string output = Json::writeString(builder, positions["test"]);
+	// printf((output[0]).c_str());
+	ant1->SetTransform(glm::mat4(output[0], output[1], output[2], output[3], output[4], output[5], output[6], output[7], output[8], output[9], output[10], output[11], output[12], output[13], output[14], output[15]));
 
 	Mesh* ant2 = new Mesh("assets/models/desert.obj");
 	ant2->SetShader(programID2, "assets/textures/desert_diffuse.png");
