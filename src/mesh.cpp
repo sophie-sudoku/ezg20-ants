@@ -84,7 +84,7 @@ void Mesh::Draw(
 {
 	glUseProgram(programID);
 
-	glm::vec3 lightPos = glm::vec3(4, 4, 4);
+	glm::vec3 lightPos = glm::vec3(4, 12, 4);
 	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]); // This one doesn't change between objects, so this can be done once for all objects that use "programID"
 
