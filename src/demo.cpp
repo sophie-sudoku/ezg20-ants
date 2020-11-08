@@ -18,6 +18,9 @@ GLFWwindow* window;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+// Include SOIL2
+#include <SOIL2.h>
+
 #include "shader.hpp"
 #include "controls.hpp"
 #include "vboindexer.hpp"
@@ -68,6 +71,66 @@ int main(void)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 
+	GLuint cubemapTexture = SOIL_load_OGL_cubemap(
+		"assets/textures/cubemap/px.png", "assets/textures/cubemap/nx.png",
+		"assets/textures/cubemap/py.png", "assets/textures/cubemap/ny.png",
+		"assets/textures/cubemap/pz.png", "assets/textures/cubemap/nz.png", 
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+	GLfloat cubemapVertices[] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
+
+	/*
+	GLuint cubemapVertexbuffer;
+	glGenBuffers(1, &cubemapVertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, cubemapVertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubemapVertices), cubemapVertices, GL_STATIC_DRAW);
+	*/
+
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -75,6 +138,7 @@ int main(void)
 	// Create and compile our GLSL program from the shaders
 	GLuint programID = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
+	GLuint cubemapProgram = LoadShaders("assets/shader/CubemapShader.vert", "assets/shader/CubemapShader.frag");
 
 	// Get model positions from positions.json
 	std::ifstream positions_file("assets/models/positions.json");
@@ -122,13 +186,24 @@ int main(void)
 
 	do {
 
+
+
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glDepthMask(GL_FALSE);
+		glUseProgram(cubemapProgram);
+		
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
+		
+		glBindVertexArray(cubemapVAO);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDepthMask(GL_TRUE);
+
 		ant1->Draw(
 			ProjectionMatrix,
 			ViewMatrix
