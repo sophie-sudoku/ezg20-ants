@@ -28,9 +28,10 @@ using namespace glm;
 #include "debug.hpp"
 #include "utils.hpp"
 
+#include <sstream>
+
 int main(void)
 {
-	//makeMat4("Thisd,is,a,test");
 	// Initialise GLFW
 	if (!glfwInit())
 	{
@@ -159,7 +160,8 @@ int main(void)
 	ant1->SetShader(programID, "assets/textures/uvmap.DDS");
 	ant1->SetupMesh();
 	const std::string output = Json::writeString(builder, positions["test"]);
-	// printf((output[0]).c_str());
+	printf(output.c_str());
+	makeMat4(output);
 	ant1->SetTransform(glm::mat4(output[0], output[1], output[2], output[3], output[4], output[5], output[6], output[7], output[8], output[9], output[10], output[11], output[12], output[13], output[14], output[15]));
 
 	Mesh* ant2 = new Mesh("assets/models/desert.obj");
@@ -194,18 +196,13 @@ int main(void)
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glDepthMask(GL_FALSE);
 		glUseProgram(cubemapProgram);
 		
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-		
-		glBindVertexArray(cubemapVAO);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glDepthMask(GL_TRUE);
+	
 
 		ant1->Draw(
 			ProjectionMatrix,

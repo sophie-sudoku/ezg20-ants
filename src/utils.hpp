@@ -4,8 +4,11 @@
 #include <glm/glm.hpp>
 #include <string>
 
-glm::mat4 makeMat4(
-	char one_line_string[]
-);
+
+std::vector<std::string> splitString(std::string input);
+
+
+
+glm::mat4 makeMat4(std::string input);
 
 #endif

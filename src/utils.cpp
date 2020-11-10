@@ -5,29 +5,38 @@
 
 #include <glm/glm.hpp>
 
+#include <stdio.h> 
+#include <string.h> 
+
+#include <string>       // std::string
+#include <sstream>      // std::stringstream
+
 using namespace std;
 
 char seps[] = ",";
 char *token, *next_token;
 
 
-glm::mat4 makeMat4(char one_line_string[])
-{
-    vector<string> vec_String_Lines;
-    token = strtok_s(one_line_string, seps, &next_token);
+std::vector<std::string> splitString(std::string input) {
+    std::stringstream ss;
+    ss << input;
+    std::string segment;
+    std::vector<std::string> seglist;
 
-    cout << "Extracting and storing data in a vector..\n\n\n";
-
-    while (token != NULL)
+    while (std::getline(ss, segment, ','))
     {
-        vec_String_Lines.push_back(token);
-        cout << token << endl;
-        token = strtok_s(NULL, seps, &next_token);
+        seglist.push_back(segment);
     }
-    cout << "Displaying end result in vector line storage..\n\n";
 
-    for (int i = 0; i < vec_String_Lines.size(); ++i)
-        cout << vec_String_Lines[i] << "\n";
-    cout << "\n\n\n";
-    return glm::mat4(1.0);
+    //for (int i = 0; i < seglist.size(); i++) {cout << seglist[i] << " ";}
+    return seglist;
+}
+
+glm::mat4 makeMat4(std::string input)
+{
+    glm::mat4 result;
+    std::vector<std::string> objects = splitString(input);
+    int i = std::stoi(objects[0]);
+    cout << i;
+    return result;
 }
