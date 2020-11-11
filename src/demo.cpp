@@ -132,7 +132,7 @@ int main(void)
 	stones->SetShader(standardProgram, "", glm::vec3(0.5, 0.5, 0.5));
 	stones->SetupMesh();
 
-	//Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
+	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 
 	do {
 
@@ -144,13 +144,12 @@ int main(void)
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
 		
-		/*
+		//Draw cubemap
 		sky->Draw(
 			ProjectionMatrix,
 			ViewMatrix
 		);
-		*/
-		
+		glBindVertexArray(VertexArrayID);
 		//Draw Desert
 		desert->Draw(
 			ProjectionMatrix,
