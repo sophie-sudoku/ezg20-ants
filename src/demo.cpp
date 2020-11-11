@@ -25,8 +25,8 @@ using namespace glm;
 #include "controls.hpp"
 #include "vboindexer.hpp"
 #include "mesh.hpp"
-#include "debug.hpp"
 #include "utils.hpp"
+#include "cubemap.hpp"
 
 #include <sstream>
 
@@ -74,60 +74,6 @@ int main(void)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 
-	GLuint cubemapTexture = SOIL_load_OGL_cubemap(
-		"assets/textures/cubemap/px.png", "assets/textures/cubemap/nx.png",
-		"assets/textures/cubemap/py.png", "assets/textures/cubemap/ny.png",
-		"assets/textures/cubemap/pz.png", "assets/textures/cubemap/nz.png", 
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-
-	GLfloat cubemapVertices[] = {
-		// positions          
-		-1.0f,  1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-
-		-1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-
-		-1.0f, -1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-
-		-1.0f,  1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f, -1.0f,
-
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f
-	};
-
-
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -169,22 +115,24 @@ int main(void)
 	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(4.0f, 0.0f, 0.0f)) );
 	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(6.0f, 0.0f, 0.0f)) );
 
-
+	//Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 
 	do {
 
-
-
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glUseProgram(cubemapProgram);
 		
 		// Compute the MVP matrix from keyboard and mouse input
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-
+		
+		/*
+		sky->Draw(
+			ProjectionMatrix,
+			ViewMatrix
+		);
+		*/
 		
 		//Draw Desert
 		desert->Draw(

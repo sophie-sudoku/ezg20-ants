@@ -39,6 +39,9 @@
     <ClCompile Include="src\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cubemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -53,6 +56,8 @@
     <None Include="assets\shader\StandardShading.vert" />
     <None Include="assets\shader\Test.frag" />
     <None Include="Readme.md" />
+    <None Include="assets\shader\CubemapShader.vert" />
+    <None Include="assets\shader\CubemapShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">
@@ -73,6 +78,9 @@
     <ClInclude Include="src\utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\cubemap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\uvmap.DDS" />
@@ -83,6 +91,27 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\desert_flows.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cubemap\nx.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cubemap\ny.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cubemap\nz.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cubemap\px.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cubemap\py.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cubemap\pz.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\desert_diffuse.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

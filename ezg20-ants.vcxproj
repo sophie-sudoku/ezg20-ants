@@ -25,11 +25,14 @@
     <ClCompile Include="src\objloader.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\demo.cpp" />
+    <ClCompile Include="src\cubemap.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vboindexer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="assets\shader\CubemapShader.frag" />
+    <None Include="assets\shader\CubemapShader.vert" />
     <None Include="assets\shader\SimpleFragmentShader.frag" />
     <None Include="assets\shader\SimpleFragmentShader.fragmentshader" />
     <None Include="assets\shader\SimpleVertexShader.vert" />
@@ -47,10 +50,18 @@
     <ClInclude Include="src\mesh.hpp" />
     <ClInclude Include="src\objloader.hpp" />
     <ClInclude Include="src\shader.hpp" />
+    <ClInclude Include="src\cubemap.hpp" />
     <ClInclude Include="src\utils.hpp" />
     <ClInclude Include="src\vboindexer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\cubemap\nx.png" />
+    <Image Include="assets\textures\cubemap\ny.png" />
+    <Image Include="assets\textures\cubemap\nz.png" />
+    <Image Include="assets\textures\cubemap\px.png" />
+    <Image Include="assets\textures\cubemap\py.png" />
+    <Image Include="assets\textures\cubemap\pz.png" />
+    <Image Include="assets\textures\desert_diffuse.bmp" />
     <Image Include="assets\textures\desert_diffuse.png" />
     <Image Include="assets\textures\desert_flows.png" />
     <Image Include="assets\textures\desert_hight.png" />
