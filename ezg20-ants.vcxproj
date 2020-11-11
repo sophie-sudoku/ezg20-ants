@@ -25,7 +25,6 @@
     <ClCompile Include="src\objloader.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\demo.cpp" />
-    <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vboindexer.cpp" />
   </ItemGroup>
@@ -48,7 +47,6 @@
     <ClInclude Include="src\mesh.hpp" />
     <ClInclude Include="src\objloader.hpp" />
     <ClInclude Include="src\shader.hpp" />
-    <ClInclude Include="src\texture.hpp" />
     <ClInclude Include="src\utils.hpp" />
     <ClInclude Include="src\vboindexer.hpp" />
   </ItemGroup>

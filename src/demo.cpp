@@ -127,20 +127,14 @@ int main(void)
 		 1.0f, -1.0f,  1.0f
 	};
 
-	/*
-	GLuint cubemapVertexbuffer;
-	glGenBuffers(1, &cubemapVertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, cubemapVertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubemapVertices), cubemapVertices, GL_STATIC_DRAW);
-	*/
 
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
-	GLuint programID2 = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
+	GLuint antProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
+	GLuint desertProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 	GLuint cubemapProgram = LoadShaders("assets/shader/CubemapShader.vert", "assets/shader/CubemapShader.frag");
 
 	// Get model positions from positions.json
@@ -156,38 +150,26 @@ int main(void)
 	builder["indentation"] = "";
 
 	// Load scene
-	Mesh *ant1 = new Mesh("assets/models/ant_sitting.obj");
-	ant1->SetShader(programID, "assets/textures/uvmap.DDS");
-	ant1->SetupMesh();
+	Mesh* desert = new Mesh("assets/models/desert.obj");
+	desert->SetShader(desertProgram, "assets/textures/desert_diffuse.png");
+	desert->SetupMesh();
+	desert->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
+
+	
+	Mesh *ant = new Mesh("assets/models/ant_sitting.obj");
+	ant->SetShader(antProgram, "assets/textures/uvmap.DDS");
+	ant->SetupMesh();
+	
+	
 	const std::string output = Json::writeString(builder, positions["test"]);
-	printf(output.c_str());
 	makeMat4(output);
-	ant1->SetTransform(glm::mat4(output[0], output[1], output[2], output[3], output[4], output[5], output[6], output[7], output[8], output[9], output[10], output[11], output[12], output[13], output[14], output[15]));
+	
+	std::vector<glm::mat4> antPositions;
+	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)) );
+	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(4.0f, 0.0f, 0.0f)) );
+	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(6.0f, 0.0f, 0.0f)) );
 
-	Mesh* ant2 = new Mesh("assets/models/desert.obj");
-	ant2->SetShader(programID2, "assets/textures/desert_diffuse.png");
-	ant2->SetupMesh();
-	ant2->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
-	Mesh* ant3 = new Mesh("assets/models/desert.obj");
-	ant3->SetShader(programID2, NULL);
-	ant3->SetupMesh();
-	ant3->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
-
-	Mesh* ant4 = new Mesh("assets/models/desert.obj");
-	ant4->SetShader(programID2, NULL);
-	ant4->SetupMesh();
-	ant4->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
-
-	Mesh* ant5 = new Mesh("assets/models/desert.obj");
-	ant5->SetShader(programID2, NULL);
-	ant5->SetupMesh();
-	ant5->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
-
-	Mesh* ant6 = new Mesh("assets/models/desert.obj");
-	ant6->SetShader(programID2, NULL);
-	ant6->SetupMesh();
-	ant6->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
 	do {
 
@@ -202,17 +184,23 @@ int main(void)
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
-	
 
-		ant1->Draw(
-			ProjectionMatrix,
-			ViewMatrix
-		);
 		
-		ant2->Draw(
+		//Draw Desert
+		desert->Draw(
 			ProjectionMatrix,
 			ViewMatrix
 		);
+
+		//Draw Ants
+		for (auto &position : antPositions) {
+			ant->SetTransform(position);
+			ant->Draw(
+				ProjectionMatrix,
+				ViewMatrix
+			);
+		}
+
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -227,10 +215,14 @@ int main(void)
 		glfwWindowShouldClose(window) == 0);
 
 	// Cleanup VBO and shader
-	glDeleteProgram(programID);
-	glDeleteProgram(programID2);
+	glDeleteProgram(antProgram);
+	glDeleteProgram(desertProgram);
 	//glDeleteTextures(1, &Texture);
 	glDeleteVertexArrays(1, &VertexArrayID);
+
+	// Clean up Meshes
+	delete desert;
+	delete ant;
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

@@ -1,20 +1,9 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <string>
-
 #include <glm/glm.hpp>
 
-#include <stdio.h> 
-#include <string.h> 
+#include <string>
+#include <sstream>
+#include <vector>
 
-#include <string>       // std::string
-#include <sstream>      // std::stringstream
-
-using namespace std;
-
-char seps[] = ",";
-char *token, *next_token;
 
 
 std::vector<std::string> splitString(std::string input) {
