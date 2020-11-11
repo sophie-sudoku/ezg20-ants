@@ -34,13 +34,9 @@
     <None Include="assets\shader\CubemapShader.frag" />
     <None Include="assets\shader\CubemapShader.vert" />
     <None Include="assets\shader\SimpleFragmentShader.frag" />
-    <None Include="assets\shader\SimpleFragmentShader.fragmentshader" />
     <None Include="assets\shader\SimpleVertexShader.vert" />
-    <None Include="assets\shader\SimpleVertexShader.vertexshader" />
     <None Include="assets\shader\StandardShading.frag" />
-    <None Include="assets\shader\StandardShading.fragmentshader" />
     <None Include="assets\shader\StandardShading.vert" />
-    <None Include="assets\shader\StandardShading.vertexshader" />
     <None Include="assets\shader\Test.frag" />
     <None Include="assets\textures\desert_diffuse.tx" />
     <None Include="Readme.md" />
@@ -55,6 +51,8 @@
     <ClInclude Include="src\vboindexer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\cactus_albedo.png" />
+    <Image Include="assets\textures\cactus_normal.png" />
     <Image Include="assets\textures\cubemap\nx.png" />
     <Image Include="assets\textures\cubemap\ny.png" />
     <Image Include="assets\textures\cubemap\nz.png" />

@@ -45,10 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="assets\shader\SimpleFragmentShader.fragmentshader" />
-    <None Include="assets\shader\SimpleVertexShader.vertexshader" />
-    <None Include="assets\shader\StandardShading.fragmentshader" />
-    <None Include="assets\shader\StandardShading.vertexshader" />
     <None Include="assets\textures\desert_diffuse.tx" />
     <None Include="assets\shader\SimpleFragmentShader.frag" />
     <None Include="assets\shader\SimpleVertexShader.vert" />
@@ -112,6 +108,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\desert_diffuse.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cactus_albedo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\cactus_normal.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

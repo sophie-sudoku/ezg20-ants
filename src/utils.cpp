@@ -30,7 +30,7 @@ glm::mat4 makeMat4(std::string input) {
     std::vector<std::string> objects = splitString(input);
 
     //seperate into vectors of 4
-    for (int i = 0; i < objects.size() / 4; i+=4) {
+    for (int i = 0; i < objects.size(); i+=4) {
         result[i/4] = glm::vec4(
             std::stof(objects[i]), 
             std::stof(objects[i + 1]), 

@@ -50,14 +50,16 @@ void Mesh::SetupMesh()
 
 void Mesh::SetShader(
 	GLuint& programID,
-	const char* path = ""
+	const char* path = "",
+	glm::vec3& color = glm::vec3(0.0f, 0.0f, 0.0f)
 )
 {
 	this->programID = programID;
 	this->MatrixID = glGetUniformLocation(programID, "MVP");
 	this->ViewMatrixID = glGetUniformLocation(programID, "V");
 	this->ModelMatrixID = glGetUniformLocation(programID, "M");
-	if (path) {
+	this->Color = color;
+	if (path != "") {
 		Texture = SOIL_load_OGL_texture // load an image file directly as a new OpenGL texture 
 		(
 			path,
@@ -66,8 +68,11 @@ void Mesh::SetShader(
 			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 		);
 		TextureID = glGetUniformLocation(programID, "myTextureSampler");
+		UseTexture = true;
 	}
+	ColorID = glGetUniformLocation(programID, "myColor");
 	LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+	UseTextureID = glGetUniformLocation(programID, "useTexture");
 }
 
 void Mesh::SetTransform(
@@ -87,9 +92,9 @@ void Mesh::Draw(
 	glm::vec3 lightPos = glm::vec3(4, 12, 4);
 	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]); // This one doesn't change between objects, so this can be done once for all objects that use "programID"
-
+	glUniform3f(ColorID, Color.x, Color.y, Color.z);
+	glUniform1i(UseTextureID, UseTexture);
 	glm::mat4 MVP1 = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
 	// Send our transformation to the currently bound shader, 
 	// in the "MVP" uniform
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP1[0][0]);

@@ -15,6 +15,8 @@ uniform sampler2D myTextureSampler;
 uniform mat4 MV;
 uniform vec3 myColor;
 uniform vec3 LightPosition_worldspace;
+uniform bool useTexture;
+
 
 void main(){
 
@@ -24,7 +26,12 @@ void main(){
 	float LightPower = 50.0f;
 	
 	// Material properties
-	vec3 MaterialDiffuseColor = texture( myTextureSampler, UV ).rgb;
+	vec3 MaterialDiffuseColor;
+	if(useTexture) {
+		MaterialDiffuseColor = texture( myTextureSampler, UV ).rgb;
+	} else {
+		MaterialDiffuseColor = myColor;
+	}
 	vec3 MaterialAmbientColor = vec3(0.25,0.25,0.25) * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = vec3(0.3,0.3,0.3);
 

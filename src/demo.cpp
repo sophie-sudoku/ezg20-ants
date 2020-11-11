@@ -79,8 +79,7 @@ int main(void)
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint antProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
-	GLuint desertProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
+	GLuint standardProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 	GLuint cubemapProgram = LoadShaders("assets/shader/CubemapShader.vert", "assets/shader/CubemapShader.frag");
 
 	// Get model positions from positions.json
@@ -95,25 +94,43 @@ int main(void)
 	Json::StreamWriterBuilder builder;
 	builder["indentation"] = "";
 
+	glm::vec3 defaultColor = glm::vec3(0.0, 0.0, 0.0);
+
 	// Load scene
 	Mesh* desert = new Mesh("assets/models/desert.obj");
-	desert->SetShader(desertProgram, "assets/textures/desert_diffuse.png");
+	desert->SetShader(standardProgram, "assets/textures/desert_diffuse.png", defaultColor);
 	desert->SetupMesh();
 	desert->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
 
 	
 	Mesh *ant = new Mesh("assets/models/ant_sitting.obj");
-	ant->SetShader(antProgram, "assets/textures/uvmap.DDS");
+	ant->SetShader(standardProgram, "", glm::vec3(0.2, 0.0, 0.0));
 	ant->SetupMesh();
-	
-	
-	const std::string output = Json::writeString(builder, positions["test"]);
-	makeMat4(output);
-	
+
 	std::vector<glm::mat4> antPositions;
-	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)) );
-	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(4.0f, 0.0f, 0.0f)) );
-	antPositions.push_back( glm::translate(glm::mat4(1.0), glm::vec3(6.0f, 0.0f, 0.0f)) );
+	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_1"])));
+	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_2"])));
+	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_3"])));
+	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_4"])));
+	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_5"])));
+	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_6"])));
+
+	Mesh* cactus = new Mesh("assets/models/cactus.obj");
+	cactus->SetShader(standardProgram, "assets/textures/cactus_albedo.png", defaultColor);
+	cactus->SetupMesh();
+
+	std::vector<glm::mat4> cactusPositions;
+	cactusPositions.push_back(makeMat4(Json::writeString(builder, positions["cactus_1"])));
+	cactusPositions.push_back(makeMat4(Json::writeString(builder, positions["cactus_2"])));
+	cactusPositions.push_back(makeMat4(Json::writeString(builder, positions["cactus_3"])));
+
+	Mesh* log = new Mesh("assets/models/log.obj");
+	log->SetShader(standardProgram, "", glm::vec3(0.6, 0.5, 0.5));
+	log->SetupMesh();
+
+	Mesh* stones = new Mesh("assets/models/stones.obj");
+	stones->SetShader(standardProgram, "", glm::vec3(0.5, 0.5, 0.5));
+	stones->SetupMesh();
 
 	//Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 
@@ -149,6 +166,26 @@ int main(void)
 			);
 		}
 
+		//Draw Cacti
+		for (auto& position : cactusPositions) {
+			cactus->SetTransform(position);
+			cactus->Draw(
+				ProjectionMatrix,
+				ViewMatrix
+			);
+		}
+
+		//Draw Stones
+		stones->Draw(
+			ProjectionMatrix,
+			ViewMatrix
+		);
+
+		//Draw Log
+		log->Draw(
+			ProjectionMatrix,
+			ViewMatrix
+		);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -163,8 +200,7 @@ int main(void)
 		glfwWindowShouldClose(window) == 0);
 
 	// Cleanup VBO and shader
-	glDeleteProgram(antProgram);
-	glDeleteProgram(desertProgram);
+	glDeleteProgram(standardProgram);
 	//glDeleteTextures(1, &Texture);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
