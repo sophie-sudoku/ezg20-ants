@@ -24,11 +24,11 @@ vec3 finalPosition = vec3(0,0,0);
 vec3 finalDirection = vec3(0,0,0);
 
 // Initial position : on +Z
-glm::vec3 position = glm::vec3(0, 10, 5);
+glm::vec3 position = glm::vec3(14.75, 9, 25);
 // Initial horizontal angle : toward -Z
-float horizontalAngle = -2.67f;
+float horizontalAngle = -2.17f;
 // Initial vertical angle : none
-float verticalAngle = 3.14f;
+float verticalAngle = 6.06f;
 // Initial Field of View
 float initialFoV = 45.0f;
 
@@ -41,6 +41,10 @@ float orbitRadius = 10.0f;
 bool F_currently_pressed = false;
 
 
+bool initialMousePosition = true;	//To ignore initial mouse position affecting the camera (although moving 
+									//the mouse during the white screen loading still affects it; could be
+									//fixed by only starting this class after loading is done, but a manual
+									//camera will not be in the final release anyway, so was decided against)
 
 
 void computeMatricesFromInputs() {
@@ -59,10 +63,13 @@ void computeMatricesFromInputs() {
 	// Reset mouse position for next frame
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
-	// Compute new orientation
-	horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
-	verticalAngle += mouseSpeed * float(768 / 2 - ypos);
-
+	// Compute new orientation based on mouse
+	if (!initialMousePosition) { //see comment in global variable
+		horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
+		verticalAngle += mouseSpeed * float(768 / 2 - ypos);
+	}
+	else { initialMousePosition = false; }
+	
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	glm::vec3 direction(
 		cos(verticalAngle) * sin(horizontalAngle),
@@ -90,6 +97,18 @@ void computeMatricesFromInputs() {
 	}
 	else {
 		F_currently_pressed = false;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+		printf("break");
+		printf("Horizontal Angle: %f ,", horizontalAngle);
+		printf("Vertical Angle: %f ,", verticalAngle);
+		printf("X: %f ,", position.x);
+		printf("Y: %f ,", position.y);
+		printf("Z: %f ,", position.z);
+		printf("xpos: %f ,", xpos);
+		printf("ypos: %f ,", ypos);
+		printf("go on");
 	}
 
 
