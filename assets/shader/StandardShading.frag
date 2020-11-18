@@ -1,33 +1,29 @@
 #version 330 core
 
-// Interpolated values from the vertex shaders
 in vec2 UV;
 in vec3 Position_worldspace;
 in vec3 Normal_cameraspace;
 in vec3 EyeDirection_cameraspace;
 in vec3 LightDirection_cameraspace;
 
-// Ouput data
 out vec3 color;
 
-// Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
+uniform sampler2D myTextureSamplerOpacity;
 uniform mat4 MV;
 uniform vec3 myColor;
 uniform vec3 LightPosition_worldspace;
 uniform bool useTexture;
 
-
 void main(){
-
-	// Light emission properties
-	// You probably want to put them as uniforms
 	vec3 LightColor = vec3(1,1,1);
 	float LightPower = 50.0f;
 	
-	// Material properties
 	vec3 MaterialDiffuseColor;
 	if(useTexture) {
+		vec4 texColor = texture(myTextureSampler, UV);
+		if(texColor.a < 0.1)
+			discard;
 		MaterialDiffuseColor = texture( myTextureSampler, UV ).rgb;
 	} else {
 		MaterialDiffuseColor = myColor;
@@ -35,7 +31,6 @@ void main(){
 	vec3 MaterialAmbientColor = vec3(0.25,0.25,0.25) * MaterialDiffuseColor;
 	vec3 MaterialSpecularColor = vec3(0.3,0.3,0.3);
 
-	// Distance to the light
 	float distance = length( LightPosition_worldspace - Position_worldspace );
 
 	// Normal of the computed fragment, in camera space

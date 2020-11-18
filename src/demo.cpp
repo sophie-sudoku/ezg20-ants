@@ -125,12 +125,51 @@ int main(void)
 	cactusPositions.push_back(makeMat4(Json::writeString(builder, positions["cactus_3"])));
 
 	Mesh* log = new Mesh("assets/models/log.obj");
-	log->SetShader(standardProgram, "", glm::vec3(0.6, 0.5, 0.5));
+	log->SetShader(standardProgram, "", glm::vec3(0.543, 0.27, 0.074));
 	log->SetupMesh();
 
 	Mesh* stones = new Mesh("assets/models/stones.obj");
-	stones->SetShader(standardProgram, "", glm::vec3(0.5, 0.5, 0.5));
+	stones->SetShader(standardProgram, "", glm::vec3(0.2, 0.2, 0.2));
 	stones->SetupMesh();
+
+	Mesh* carpet = new Mesh("assets/models/carpet.obj");
+	carpet->SetShader(standardProgram, "assets/textures/carpet_diffuse.png", defaultColor);
+	carpet->SetupMesh();
+
+	std::vector<glm::mat4> grasPositions;
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_1"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_2"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_3"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_4"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_5"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_6"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_7"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_8"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_9"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_10"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_11"])));
+	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_12"])));
+	Mesh* gras = new Mesh("assets/models/gras.obj");
+	gras->SetShader(standardProgram, "assets/textures/gras.png", defaultColor);
+	gras->SetupMesh();
+
+	std::vector<glm::mat4> stonePositions;
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_1"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_2"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_3"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_4"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_5"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_6"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_7"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_8"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_9"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_10"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_11"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_12"])));
+	stonePositions.push_back(makeMat4(Json::writeString(builder, positions["stones_13"])));
+	Mesh* stone = new Mesh("assets/models/stone.obj");
+	stone->SetShader(standardProgram, "", glm::vec3(0.2, 0.2, 0.2));
+	stone->SetupMesh();
 
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 
@@ -155,6 +194,30 @@ int main(void)
 			ProjectionMatrix,
 			ViewMatrix
 		);
+
+		//Draw carpet
+		carpet->Draw(
+			ProjectionMatrix,
+			ViewMatrix
+		);
+
+		//Draw gras
+		for (auto& position : grasPositions) {
+			gras->SetTransform(position);
+			gras->Draw(
+				ProjectionMatrix,
+				ViewMatrix
+			);
+		}
+
+		//Draw single stones
+		for (auto& position : stonePositions) {
+			stone->SetTransform(position);
+			stone->Draw(
+				ProjectionMatrix,
+				ViewMatrix
+			);
+		}
 
 		//Draw Ants
 		for (auto &position : antPositions) {
