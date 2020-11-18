@@ -38,7 +38,6 @@
     <None Include="assets\shader\StandardShading.frag" />
     <None Include="assets\shader\StandardShading.vert" />
     <None Include="assets\shader\Test.frag" />
-    <None Include="assets\textures\desert_diffuse.tx" />
     <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
@@ -59,11 +58,7 @@
     <Image Include="assets\textures\cubemap\px.png" />
     <Image Include="assets\textures\cubemap\py.png" />
     <Image Include="assets\textures\cubemap\pz.png" />
-    <Image Include="assets\textures\desert_diffuse.bmp" />
     <Image Include="assets\textures\desert_diffuse.png" />
-    <Image Include="assets\textures\desert_flows.png" />
-    <Image Include="assets\textures\desert_hight.png" />
-    <Image Include="assets\textures\uvmap.DDS" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

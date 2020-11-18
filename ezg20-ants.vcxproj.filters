@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
-    <None Include="assets\textures\desert_diffuse.tx" />
     <None Include="assets\shader\SimpleFragmentShader.frag" />
     <None Include="assets\shader\SimpleVertexShader.vert" />
     <None Include="assets\shader\StandardShading.frag" />
@@ -79,14 +78,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\textures\uvmap.DDS" />
-    <Image Include="assets\textures\desert_hight.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="assets\textures\desert_diffuse.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\textures\desert_flows.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\cubemap\nx.png">
@@ -105,9 +97,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\cubemap\pz.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\textures\desert_diffuse.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\cactus_albedo.png">
