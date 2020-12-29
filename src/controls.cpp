@@ -169,9 +169,9 @@ void computeMatricesFromInputs() {
 	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
-		finalPosition,           // Camera is here
-		finalDirection, // and looks here : at the same position, plus "direction"
-		up                // Head is up (set to 0,-1,0 to look upside-down)
+		finalPosition,      // Camera is here
+		finalDirection,		// and looks here : at the same position, plus "direction"
+		up					// Head is up (set to 0,-1,0 to look upside-down)
 	);
 
 	// For the next frame, the "last time" will be "now"

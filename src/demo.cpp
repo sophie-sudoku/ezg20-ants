@@ -25,6 +25,7 @@ using namespace glm;
 #include "controls.hpp"
 #include "vboindexer.hpp"
 #include "mesh.hpp"
+#include "particles.hpp"
 #include "utils.hpp"
 #include "cubemap.hpp"
 
@@ -81,6 +82,7 @@ int main(void)
 	// Create and compile our GLSL program from the shaders
 	GLuint standardProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 	GLuint cubemapProgram = LoadShaders("assets/shader/CubemapShader.vert", "assets/shader/CubemapShader.frag");
+	GLuint particleProgram = LoadShaders("assets/shader/ParticleShader.vert", "assets/shader/ParticleShader.frag");
 
 	// Get model positions from positions.json
 	std::ifstream positions_file("assets/models/positions.json");
@@ -171,6 +173,12 @@ int main(void)
 	stone->SetShader(standardProgram, "", glm::vec3(0.2, 0.2, 0.2));
 	stone->SetupMesh();
 
+	
+	unsigned int numberOfParticles = 500;
+	unsigned int newParticlesPerFrame = 5;
+	ParticleSystem* ps = new ParticleSystem(numberOfParticles, newParticlesPerFrame, particleProgram);
+
+
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 
 	do {
@@ -201,7 +209,7 @@ int main(void)
 			ViewMatrix
 		);
 
-		//Draw gras
+		//Draw grass
 		for (auto& position : grasPositions) {
 			gras->SetTransform(position);
 			gras->Draw(
@@ -248,6 +256,11 @@ int main(void)
 			ProjectionMatrix,
 			ViewMatrix
 		);
+
+
+		//Draw Particles
+		ps->UpdateParticles();
+		ps->DrawParticles();
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

@@ -23,6 +23,7 @@
     <ClCompile Include="src\controls.cpp" />
     <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\objloader.cpp" />
+    <ClCompile Include="src\particles.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\demo.cpp" />
     <ClCompile Include="src\cubemap.cpp" />
@@ -33,6 +34,8 @@
     <None Include=".gitignore" />
     <None Include="assets\shader\CubemapShader.frag" />
     <None Include="assets\shader\CubemapShader.vert" />
+    <None Include="assets\shader\ParticleShader.frag" />
+    <None Include="assets\shader\ParticleShader.vert" />
     <None Include="assets\shader\SimpleFragmentShader.frag" />
     <None Include="assets\shader\SimpleVertexShader.vert" />
     <None Include="assets\shader\StandardShading.frag" />
@@ -44,6 +47,7 @@
     <ClInclude Include="src\controls.hpp" />
     <ClInclude Include="src\mesh.hpp" />
     <ClInclude Include="src\objloader.hpp" />
+    <ClInclude Include="src\particles.hpp" />
     <ClInclude Include="src\shader.hpp" />
     <ClInclude Include="src\cubemap.hpp" />
     <ClInclude Include="src\utils.hpp" />

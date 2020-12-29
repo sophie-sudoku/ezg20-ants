@@ -42,6 +42,9 @@
     <ClCompile Include="src\cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\particles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -53,6 +56,8 @@
     <None Include="Readme.md" />
     <None Include="assets\shader\CubemapShader.vert" />
     <None Include="assets\shader\CubemapShader.frag" />
+    <None Include="assets\shader\ParticleShader.frag" />
+    <None Include="assets\shader\ParticleShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">
@@ -74,6 +79,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cubemap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\particles.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
