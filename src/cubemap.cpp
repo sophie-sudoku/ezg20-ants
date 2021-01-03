@@ -17,8 +17,16 @@ Cubemap::Cubemap(
     const string cubeMapName, const float size, GLuint& programID
 )
 {
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+    this->VertexArrayID = VertexArrayID;
     this->ProgramID = programID;
     LoadCubemap(cubeMapName, size);
+}
+
+Cubemap::~Cubemap() {
+    glDeleteVertexArrays(1, &VertexArrayID);
 }
 
 void Cubemap::LoadCubemap(const string cubeMapName, const float size)
@@ -104,13 +112,13 @@ void Cubemap::Draw(
 {
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
-    
+
     glm::mat4 viewNew = glm::mat4(glm::mat3(ViewMatrix));
 
     glUseProgram(ProgramID);
     glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, glm::value_ptr(viewNew));
     glUniformMatrix4fv(ProjectionMatrixID, 1, GL_FALSE, glm::value_ptr(ProjectionMatrix));
-    
+
     glBindVertexArray(vao);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, Texture);
@@ -121,4 +129,5 @@ void Cubemap::Draw(
 
     glDepthFunc(GL_LESS);
     glDepthMask(GL_TRUE);
+    glBindVertexArray(VertexArrayID);
 }

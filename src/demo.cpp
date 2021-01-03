@@ -75,10 +75,6 @@ int main(void)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-
 	// Create and compile our GLSL program from the shaders
 	GLuint standardProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
 	GLuint cubemapProgram = LoadShaders("assets/shader/CubemapShader.vert", "assets/shader/CubemapShader.frag");
@@ -196,7 +192,6 @@ int main(void)
 			ProjectionMatrix,
 			ViewMatrix
 		);
-		glBindVertexArray(VertexArrayID);
 		//Draw Desert
 		desert->Draw(
 			ProjectionMatrix,
@@ -276,8 +271,6 @@ int main(void)
 
 	// Cleanup VBO and shader
 	glDeleteProgram(standardProgram);
-	//glDeleteTextures(1, &Texture);
-	glDeleteVertexArrays(1, &VertexArrayID);
 
 	// Clean up Meshes
 	delete desert;

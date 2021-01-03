@@ -24,6 +24,7 @@ private:
     unsigned int Texture;
     GLuint ProjectionMatrixID;
     GLuint ViewMatrixID;
+    GLuint VertexArrayID;
     glm::mat4 ModelMatrix = glm::mat4(1.0);
     void LoadCubemap(const string cubeMapName, const float size);
     GLuint vao;
@@ -31,6 +32,7 @@ private:
 
 public:
     Cubemap(const string cubeMapName, const float size, GLuint& programID);
+    ~Cubemap();
     void Draw(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 };
 
