@@ -84,19 +84,17 @@ void Mesh::SetTransform(
 
 void Mesh::Draw(
 	glm::mat4 ProjectionMatrix,
-	glm::mat4 ViewMatrix
+	glm::mat4 ViewMatrix,
+	glm::vec3 lightPos
 )
 {
 	glUseProgram(programID);
 
-	glm::vec3 lightPos = glm::vec3(4, 12, 4);
 	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]); // This one doesn't change between objects, so this can be done once for all objects that use "programID"
 	glUniform3f(ColorID, Color.x, Color.y, Color.z);
 	glUniform1i(UseTextureID, UseTexture);
 	glm::mat4 MVP1 = ProjectionMatrix * ViewMatrix * ModelMatrix;
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP1[0][0]);
 	glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 

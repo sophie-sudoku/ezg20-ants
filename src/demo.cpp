@@ -177,6 +177,8 @@ int main(void)
 
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 
+	glm::vec3 lightPos = glm::vec3(4, 12, 4);
+
 	do {
 
 		// Clear the screen
@@ -195,13 +197,15 @@ int main(void)
 		//Draw Desert
 		desert->Draw(
 			ProjectionMatrix,
-			ViewMatrix
+			ViewMatrix,
+			lightPos
 		);
 
 		//Draw carpet
 		carpet->Draw(
 			ProjectionMatrix,
-			ViewMatrix
+			ViewMatrix,
+			lightPos
 		);
 
 		//Draw grass
@@ -209,7 +213,8 @@ int main(void)
 			gras->SetTransform(position);
 			gras->Draw(
 				ProjectionMatrix,
-				ViewMatrix
+				ViewMatrix,
+				lightPos
 			);
 		}
 
@@ -218,7 +223,8 @@ int main(void)
 			stone->SetTransform(position);
 			stone->Draw(
 				ProjectionMatrix,
-				ViewMatrix
+				ViewMatrix,
+				lightPos
 			);
 		}
 
@@ -227,7 +233,8 @@ int main(void)
 			ant->SetTransform(position);
 			ant->Draw(
 				ProjectionMatrix,
-				ViewMatrix
+				ViewMatrix,
+				lightPos
 			);
 		}
 
@@ -236,20 +243,23 @@ int main(void)
 			cactus->SetTransform(position);
 			cactus->Draw(
 				ProjectionMatrix,
-				ViewMatrix
+				ViewMatrix,
+				lightPos
 			);
 		}
 
 		//Draw Stones
 		stones->Draw(
 			ProjectionMatrix,
-			ViewMatrix
+			ViewMatrix,
+			lightPos
 		);
 
 		//Draw Log
 		log->Draw(
 			ProjectionMatrix,
-			ViewMatrix
+			ViewMatrix,
+			lightPos
 		);
 
 

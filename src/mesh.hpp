@@ -39,7 +39,8 @@ public:
     void SetupMesh();
     void Draw(
         glm::mat4 ProjectionMatrix,
-        glm::mat4 ViewMatrix
+        glm::mat4 ViewMatrix,
+        glm::vec3 lightPos
     );
     void SetTransform(
         glm::mat4 transform
