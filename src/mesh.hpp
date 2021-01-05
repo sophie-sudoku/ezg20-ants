@@ -20,6 +20,8 @@ public:
     std::vector<glm::vec3> indexed_normals;
     GLuint Texture;
     GLuint TextureID;
+    GLuint DepthTexture;
+    GLuint UseDepthTextureID;
     glm::vec3 Color;
     GLuint ColorID;
     GLuint LightID;
@@ -28,6 +30,8 @@ public:
     GLuint MatrixID;
     GLuint ViewMatrixID;
     GLuint ModelMatrixID;
+    GLuint DepthBiasID;
+    GLuint DepthTextureID;
     GLuint vertexbuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
@@ -40,10 +44,14 @@ public:
     void Draw(
         glm::mat4 ProjectionMatrix,
         glm::mat4 ViewMatrix,
-        glm::vec3 lightPos
+        glm::vec3 lightPos,
+        glm::mat4 depthBiasMVP
     );
     void SetTransform(
         glm::mat4 transform
+    );
+    void Mesh::SetDepthTexture(
+        GLuint& DepthTexture
     );
 
 private:

@@ -55,9 +55,9 @@ void Mesh::SetShader(
 )
 {
 	this->programID = programID;
-	this->MatrixID = glGetUniformLocation(programID, "MVP");
-	this->ViewMatrixID = glGetUniformLocation(programID, "V");
-	this->ModelMatrixID = glGetUniformLocation(programID, "M");
+	MatrixID = glGetUniformLocation(programID, "MVP");
+	ViewMatrixID = glGetUniformLocation(programID, "V");
+	ModelMatrixID = glGetUniformLocation(programID, "M");
 	this->Color = color;
 	if (path != "") {
 		Texture = SOIL_load_OGL_texture // load an image file directly as a new OpenGL texture 
@@ -73,6 +73,9 @@ void Mesh::SetShader(
 	ColorID = glGetUniformLocation(programID, "myColor");
 	LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
 	UseTextureID = glGetUniformLocation(programID, "useTexture");
+	DepthBiasID = glGetUniformLocation(programID, "DepthBiasMVP");
+	DepthTextureID = glGetUniformLocation(programID, "shadowMap");
+	UseDepthTextureID = glGetUniformLocation(programID, "useDepthTexture");
 }
 
 void Mesh::SetTransform(
@@ -82,27 +85,44 @@ void Mesh::SetTransform(
 	ModelMatrix = transform;
 }
 
+void Mesh::SetDepthTexture(
+	GLuint& DepthTexture
+)
+{
+	this->DepthTexture = DepthTexture;
+}
+
 void Mesh::Draw(
 	glm::mat4 ProjectionMatrix,
 	glm::mat4 ViewMatrix,
-	glm::vec3 lightPos
+	glm::vec3 lightPos,
+	glm::mat4 depthBiasMVP
 )
 {
 	glUseProgram(programID);
 
 	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]); // This one doesn't change between objects, so this can be done once for all objects that use "programID"
+	glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniform3f(ColorID, Color.x, Color.y, Color.z);
 	glUniform1i(UseTextureID, UseTexture);
 	glm::mat4 MVP1 = ProjectionMatrix * ViewMatrix * ModelMatrix;
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP1[0][0]);
 	glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-
+	glUniformMatrix4fv(DepthBiasID, 1, GL_FALSE, &depthBiasMVP[0][0]);
 
 	if (Texture) {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, Texture);
 		glUniform1i(TextureID, 0);
+	}
+	if (DepthTexture) {
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, DepthTexture);
+		glUniform1i(DepthTextureID, 1);
+		glUniform1i(UseDepthTextureID, true);
+	}
+	else {
+		glUniform1i(UseDepthTextureID, false);
 	}
 
 	// 1rst attribute buffer : vertices
@@ -151,4 +171,7 @@ void Mesh::Draw(
 		GL_UNSIGNED_SHORT,   // type
 		(void*)0           // element array buffer offset
 	);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }

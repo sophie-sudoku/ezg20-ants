@@ -28,6 +28,7 @@ using namespace glm;
 #include "particles.hpp"
 #include "utils.hpp"
 #include "cubemap.hpp"
+#include "shadowmap.hpp"
 
 #include <sstream>
 
@@ -98,8 +99,6 @@ int main(void)
 	Mesh* desert = new Mesh("assets/models/desert.obj");
 	desert->SetShader(standardProgram, "assets/textures/desert_diffuse.png", defaultColor);
 	desert->SetupMesh();
-	desert->SetTransform(glm::translate(glm::mat4(1.0), glm::vec3(2.0f, 0.0f, 0.0f)));
-
 	
 	Mesh *ant = new Mesh("assets/models/ant_sitting.obj");
 	ant->SetShader(standardProgram, "", glm::vec3(0.2, 0.0, 0.0));
@@ -174,20 +173,43 @@ int main(void)
 	unsigned int newParticlesPerFrame = 5;
 	ParticleSystem* ps = new ParticleSystem(numberOfParticles, newParticlesPerFrame, particleProgram);
 
-
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
+	Shadowmap* shadowmap = new Shadowmap();
 
-	glm::vec3 lightPos = glm::vec3(4, 12, 4);
+	std::vector<Mesh*> shadowMeshes = {desert, ant, stone, carpet};
+
+	for (Mesh* mesh : shadowMeshes) {
+		mesh->SetDepthTexture(shadowmap->depthTexture);
+	}
+
+	// TODO: move lightsource slightly up and down foir every frame
+	glm::vec3 lightPos = glm::vec3(-2.8, 1.2, 4.5);
 
 	do {
 
-		// Clear the screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		shadowmap->DrawSetup();
 		
-		// Compute the MVP matrix from keyboard and mouse input
+		for (auto& position : stonePositions) {
+			stone->SetTransform(position);
+			shadowmap->Draw(stone, lightPos);
+		}
+		for (auto& position : antPositions) {
+			ant->SetTransform(position);
+			shadowmap->Draw(ant, lightPos);
+		}
+
+		shadowmap->Draw(desert, lightPos);
+		shadowmap->Draw(carpet, lightPos);
+		shadowmap->DrawTeardown();
+
+
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		computeMatricesFromInputs();
 		glm::mat4 ProjectionMatrix = getProjectionMatrix();
 		glm::mat4 ViewMatrix = getViewMatrix();
+
 		
 		//Draw cubemap
 		sky->Draw(
@@ -198,14 +220,16 @@ int main(void)
 		desert->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos
+			lightPos,
+			shadowmap->depthBiasMVP
 		);
 
 		//Draw carpet
 		carpet->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos
+			lightPos,
+			shadowmap->depthBiasMVP
 		);
 
 		//Draw grass
@@ -214,7 +238,8 @@ int main(void)
 			gras->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos
+				lightPos,
+				shadowmap->depthBiasMVP
 			);
 		}
 
@@ -224,7 +249,8 @@ int main(void)
 			stone->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos
+				lightPos,
+				shadowmap->depthBiasMVP
 			);
 		}
 
@@ -234,7 +260,8 @@ int main(void)
 			ant->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos
+				lightPos,
+				shadowmap->depthBiasMVP
 			);
 		}
 
@@ -244,7 +271,8 @@ int main(void)
 			cactus->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos
+				lightPos,
+				shadowmap->depthBiasMVP
 			);
 		}
 
@@ -252,14 +280,16 @@ int main(void)
 		stones->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos
+			lightPos,
+			shadowmap->depthBiasMVP
 		);
 
 		//Draw Log
 		log->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos
+			lightPos,
+			shadowmap->depthBiasMVP
 		);
 
 
@@ -267,22 +297,18 @@ int main(void)
 		ps->UpdateParticles();
 		ps->DrawParticles();
 
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-	} // Check if the ESC key was pressed or the window was closed
+	}
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(window) == 0);
 
-	// Cleanup VBO and shader
+	// TODO: Cleanup shaders
 	glDeleteProgram(standardProgram);
 
-	// Clean up Meshes
+	// TODO: Clean up Meshes
 	delete desert;
 	delete ant;
 
@@ -291,4 +317,3 @@ int main(void)
 
 	return 0;
 }
-
