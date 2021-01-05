@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <random>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -182,11 +183,29 @@ int main(void)
 		mesh->SetDepthTexture(shadowmap->depthTexture);
 	}
 
-	// TODO: move lightsource slightly up and down foir every frame
+	// Lightsource: Fire
 	glm::vec3 lightPos = glm::vec3(-2.8, 1.2, 4.5);
+	uint frame = 1.0;
+	bool reverse = false;
 
 	do {
+		// Animate light
+		std::random_device rd;
+		std::default_random_engine eng(rd());
+		std::uniform_real_distribution<float> distr(-0.1, 0.1);
 
+		if (reverse) {
+			frame = frame -1;
+		} else {
+			frame = frame +1;
+		}
+		if (frame <= 0 || frame >= 80) {
+			reverse = !reverse;
+		}
+		// Remove +distr(eng) if the flickering is disturbing
+		lightPos.y = (0.8 + (frame / 80.0))+distr(eng);
+
+		// Draw shadows to shadow map
 		shadowmap->DrawSetup();
 		
 		for (auto& position : stonePositions) {
