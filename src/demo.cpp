@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <random>
+#include <irrKlang.h>
 
 // Include GLEW
 #include <GL/glew.h>
@@ -187,6 +188,10 @@ int main(void)
 	glm::vec3 lightPos = glm::vec3(-2.8, 1.2, 4.5);
 	uint frame = 1.0;
 	bool reverse = false;
+
+	// Create sound
+	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+	SoundEngine->play2D("assets/audio/guitar-track.mp3", true);
 
 	do {
 		// Animate light

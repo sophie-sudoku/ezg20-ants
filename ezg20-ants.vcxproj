@@ -27,6 +27,8 @@
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\demo.cpp" />
     <ClCompile Include="src\cubemap.cpp" />
+    <ClCompile Include="src\shadowmap.cpp" />
+    <ClCompile Include="src\test.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vboindexer.cpp" />
   </ItemGroup>
@@ -34,6 +36,8 @@
     <None Include=".gitignore" />
     <None Include="assets\shader\CubemapShader.frag" />
     <None Include="assets\shader\CubemapShader.vert" />
+    <None Include="assets\shader\DepthShader.frag" />
+    <None Include="assets\shader\DepthShader.vert" />
     <None Include="assets\shader\ParticleShader.frag" />
     <None Include="assets\shader\ParticleShader.vert" />
     <None Include="assets\shader\SimpleFragmentShader.frag" />
@@ -41,6 +45,7 @@
     <None Include="assets\shader\StandardShading.frag" />
     <None Include="assets\shader\StandardShading.vert" />
     <None Include="assets\shader\Test.frag" />
+    <None Include="assets\shader\testshader.frag" />
     <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +55,7 @@
     <ClInclude Include="src\particles.hpp" />
     <ClInclude Include="src\shader.hpp" />
     <ClInclude Include="src\cubemap.hpp" />
+    <ClInclude Include="src\shadowmap.hpp" />
     <ClInclude Include="src\utils.hpp" />
     <ClInclude Include="src\vboindexer.hpp" />
   </ItemGroup>
@@ -120,14 +126,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\ASSIMP\include;$(SolutionDir)dependencies\GLFW\include;$(SolutionDir)dependencies\GLEW\include;$(SolutionDir)dependencies\GLM;$(SolutionDir)dependencies\JSON;$(SoultionDir)dependencies\SOIL2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\ASSIMP\include;$(SolutionDir)dependencies\GLFW\include;$(SolutionDir)dependencies\GLEW\include;$(SolutionDir)dependencies\GLM;$(SolutionDir)dependencies\JSON;$(SoultionDir)dependencies\SOIL2\include;$(SolutionDir)dependencies\IRRKLANG\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ASSIMP\lib;$(SolutionDir)dependencies\GLFW\lib-vc2019;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\GLFW\lib;$(SolutionDir)dependencies\SOIL2\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;assimp-vc140-mt.lib;soil2-debug.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ASSIMP\lib;$(SolutionDir)dependencies\GLFW\lib-vc2019;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\GLFW\lib;$(SolutionDir)dependencies\SOIL2\lib;$(SolutionDir)dependencies\IRRKLANG\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;assimp-vc140-mt.lib;soil2-debug.lib;irrKlang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,7 +142,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\ASSIMP\include;$(SolutionDir)dependencies\GLFW\include;$(SolutionDir)dependencies\GLEW\include;$(SolutionDir)dependencies\GLM;$(SolutionDir)dependencies\JSON;$(SoultionDir)dependencies\SOIL2\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\ASSIMP\include;$(SolutionDir)dependencies\GLFW\include;$(SolutionDir)dependencies\GLEW\include;$(SolutionDir)dependencies\GLM;$(SolutionDir)dependencies\JSON;$(SoultionDir)dependencies\SOIL2\include;$(SolutionDir)dependencies\IRRKLANG\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -144,8 +150,8 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ASSIMP\lib;$(SolutionDir)dependencies\GLFW\lib-vc2019;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\GLFW\lib;$(SolutionDir)dependencies\SOIL2\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;assimp-vc140-mt.lib;soil2-debug.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ASSIMP\lib;$(SolutionDir)dependencies\GLFW\lib-vc2019;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\GLFW\lib;$(SolutionDir)dependencies\SOIL2\lib;$(SolutionDir)dependencies\IRRKLANG\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;assimp-vc140-mt.lib;soil2-debug.lib;irrKlang.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

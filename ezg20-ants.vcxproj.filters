@@ -45,6 +45,12 @@
     <ClCompile Include="src\particles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shadowmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -58,6 +64,9 @@
     <None Include="assets\shader\CubemapShader.frag" />
     <None Include="assets\shader\ParticleShader.frag" />
     <None Include="assets\shader\ParticleShader.vert" />
+    <None Include="assets\shader\testshader.frag" />
+    <None Include="assets\shader\DepthShader.frag" />
+    <None Include="assets\shader\DepthShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">
@@ -82,6 +91,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\particles.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shadowmap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
