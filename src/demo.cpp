@@ -171,9 +171,7 @@ int main(void)
 	stone->SetupMesh();
 
 	
-	unsigned int numberOfParticles = 500;
-	unsigned int newParticlesPerFrame = 5;
-	ParticleSystem* ps = new ParticleSystem(numberOfParticles, newParticlesPerFrame, particleProgram);
+	ParticleSystem* ps = new ParticleSystem(particleProgram, 100000);
 
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 	Shadowmap* shadowmap = new Shadowmap();
@@ -317,9 +315,12 @@ int main(void)
 		);
 
 
-		//Draw Particles
-		ps->UpdateParticles();
-		ps->DrawParticles();
+		//Update Particles and Draw Fire
+		ps->Update(0.03); //TODO: adjust for different framerates by using deltatime
+		ps->Draw(
+			ProjectionMatrix,
+			ViewMatrix);
+
 
 		// Swap buffers
 		glfwSwapBuffers(window);
@@ -329,12 +330,22 @@ int main(void)
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 		glfwWindowShouldClose(window) == 0);
 
-	// TODO: Cleanup shaders
+	// Cleanup shaders
 	glDeleteProgram(standardProgram);
+	glDeleteProgram(cubemapProgram);
+	glDeleteProgram(particleProgram);
 
-	// TODO: Clean up Meshes
+	// Clean up Meshes
 	delete desert;
 	delete ant;
+	delete cactus;
+	delete log;
+	delete stones;
+	delete carpet;
+
+	// Clean up cubemap & particle system
+	delete sky;
+	delete ps;
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

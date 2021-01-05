@@ -13,123 +13,182 @@
 
 
 ParticleSystem::ParticleSystem(
-    unsigned int maxParticles,
-    unsigned int newParticles,
-    GLuint& programID
+    GLuint& programID,
+    unsigned int maxParticles
 )
 {
-    this->maxParticles = maxParticles;
-    this->newParticles = newParticles;
+    //set global variables
+    this->spawnPosition = vec3(
+        -2.58,
+         0.46,
+         4.49
+    );
+    this->spawnRadius = 1.2;
+
+
+    //setup shaders
     this->programID = programID;
+    this->ViewMatrix = glGetUniformLocation(programID, "V");
+    this->ProjectionMatrix = glGetUniformLocation(programID, "P");
 
-    OffsetID = glGetUniformLocation(programID, "offset");
-    ColorID = glGetUniformLocation(programID, "color");
 
-
-    unsigned int VBO;
-    float particle_quad[] = {
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
+    //Create Particle vertices, generate & fill buffer
+    static const GLfloat particle_vertex_buffer_data[] = {
+         0.0f, 0.0f, 0.0f,
+         1.0f, 0.0f, 0.0f,
+         0.0f, 1.0f, 0.0f,
+         1.0f, 1.0f, 0.0f
     };
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(this->VAO);
-    // fill mesh buffer
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(particle_quad), particle_quad, GL_STATIC_DRAW);
-    // set mesh attributes
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glBindVertexArray(0);
+
+    glGenBuffers(1, &this->vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(particle_vertex_buffer_data), particle_vertex_buffer_data, GL_STATIC_DRAW);
 
 
-    for (unsigned int i = 0; i < maxParticles; ++i)
-        this->particles.push_back(Particle());
+    //Create Particles, generate & fill position buffer
+    this->particles.resize(maxParticles);
+    particle_position_buffer_data = new float[maxParticles * 4];
+
+    for (uint i = 0; i < maxParticles; ++i)
+    {
+        SpawnParticle(i);
+        UpdatePosition(i);
+    }
+
+    glGenBuffers(1, &this->positionBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, this->positionBuffer);
+    glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float), particle_position_buffer_data, GL_DYNAMIC_DRAW);
+
+
+    //go through update a couple times so it looks natural on start
+    for (unsigned i = 0; i < 200; i++) {
+        Update(0.01);
+    }
 }
+
+
 
 ParticleSystem::~ParticleSystem()
 {
-
+    glDeleteBuffers(1, &vertexBuffer);
+    delete particle_position_buffer_data;
 }
 
-void ParticleSystem::DrawParticles() {
+
+void ParticleSystem::Draw(
+    glm::mat4 ProjectionMatrix,
+    glm::mat4 ViewMatrix
+)
+{
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glUseProgram(programID);
-    for (Particle p : particles)
-    {
-        if (p.life > 0.0f)
-        {
-            glUniform2f(OffsetID, p.pos.x, p.pos.y);
-            glUniform4f(ColorID, p.color.x, p.color.y, p.color.z, p.color.w);
-            
-            glBindVertexArray(this->VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
-        }
-    }
+    glUseProgram(this->programID);
+
+    glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
+    glUniformMatrix4fv(this->ProjectionMatrix, 1, GL_FALSE, &ProjectionMatrix[0][0]);
+
+
+    //Update Position Buffer
+    glBindBuffer(GL_ARRAY_BUFFER, this->positionBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, this->particles.size() * 4 * sizeof(float), this->particle_position_buffer_data);
+
+    //Buffer Vertices
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    //Buffer positions
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, this->positionBuffer);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glVertexAttribDivisor(1, 1);
+
+    // Draw
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, this->particles.size()); // 3 indices starting at 0 -> 1 triangle
+
+
+    //Resets & Disables
+    glVertexAttribDivisor(1, 0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void ParticleSystem::UpdateParticles()
+
+
+void ParticleSystem::Update(const float dt)
 {
-    float dt = 0.1;
-
-    // add new particles
-    for (unsigned int i = 0; i < newParticles; ++i)
+    for (uint i = 0; i < this->particles.size(); ++i)
     {
-        unsigned int unusedParticle = getFirstUnusedParticle();
-        RespawnParticle(particles[unusedParticle], vec2(0,0));
-    }
+        // subtract from the particles lifetime
+        this->particles[i].lifetime -= dt;
 
-    // update all particles
-    for (unsigned int i = 0; i < maxParticles; ++i)
-    {
-        Particle& p = particles[i];
-        p.life -= dt; // reduce life
-        if (p.life > 0.0f)
-        {	// particle is alive, thus update
-            p.pos -= p.velocity * dt;
-            p.color.a -= dt * 2.5f;
+        // if the lifetime is below 0 respawn the particle
+        if (this->particles[i].lifetime <= 0.0f)
+        {
+            SpawnParticle(i);
         }
-    }
 
+        // move the particle down depending on the delta time
+        this->particles[i].position += dt * this->particles[i].velocity;
+
+        // update the position buffer
+        UpdatePosition(i);
+    }
 }
 
-unsigned int ParticleSystem::getFirstUnusedParticle() {
-    // search from last used particle, this will usually return almost instantly
-    for (unsigned int i = lastUsedParticle; i < maxParticles; ++i) {
-        if (particles[i].life <= 0.0f) {
-            lastUsedParticle = i;
-            return i;
-        }
+void ParticleSystem::SpawnParticle(unsigned int particleID) {
+    // give every particle a random position in a XZ circle around the spawn pos using pythagorean
+    float adjacent = RandomNumber(-spawnRadius, spawnRadius);
+    float oppositeMax = sqrt(spawnRadius * spawnRadius - adjacent * adjacent);
+    float opposite = RandomNumber(-oppositeMax, oppositeMax);
+
+    if (particleID % 2) {
+        this->particles[particleID].position = vec3(
+            spawnPosition.x + adjacent,
+            spawnPosition.y + RandomNumber(-0.3 * (rand()%2), 0.5),
+            spawnPosition.z + opposite
+        );
     }
-    // otherwise, do a linear search
-    for (unsigned int i = 0; i < lastUsedParticle; ++i) {
-        if (particles[i].life <= 0.0f) {
-            lastUsedParticle = i;
-            return i;
-        }
+    else {
+        this->particles[particleID].position = vec3(
+            spawnPosition.x + opposite,
+            spawnPosition.y + RandomNumber(-0.3 * (rand() % 2), 0.5),
+            spawnPosition.z + adjacent
+        );
     }
-    // override first particle if all others are alive
-    lastUsedParticle = 0;
-    return 0;
+
+    // give every particle a lifetime based on distance to center
+    float distanceToEdge = spawnRadius - sqrt(opposite * opposite + adjacent * adjacent);
+    this->particles[particleID].lifetime = RandomNumber(distanceToEdge * 1.0f, distanceToEdge * 4.0f + 0.8);
+    
+
+    // give every particle a random velocity using 2^x to get a few outliers
+    // determine random negatives
+    int xmult = 1;
+    int zmult = 1;
+    if (rand() % 2) {
+        xmult = -1;
+    }
+    if (rand() % 2) {
+        zmult = -1;
+    }
+    //2^8 = 128 / 400 gives range from 1/400 to about 1/4
+    this->particles[particleID].velocity = vec3(
+        xmult * pow(2,RandomNumber(0,8)) / 400,
+        RandomNumber(0.1,1),
+        zmult * pow(2, RandomNumber(0,8)) / 400
+    );
+}
+
+void ParticleSystem::UpdatePosition(unsigned int particleID) {
+    this->particle_position_buffer_data[particleID * 4 + 0] = this->particles[particleID].position[0];
+    this->particle_position_buffer_data[particleID * 4 + 1] = this->particles[particleID].position[1];
+    this->particle_position_buffer_data[particleID * 4 + 2] = this->particles[particleID].position[2];
+    this->particle_position_buffer_data[particleID * 4 + 3] = this->particles[particleID].lifetime;
 }
 
 
-void ParticleSystem::RespawnParticle(
-    Particle p, 
-    vec2 offset
-) 
+float ParticleSystem::RandomNumber(float Min, float Max)
 {
-    float random = ((rand() % 100) - 50) / 10.0f;
-    float rColor = 0.5f + ((rand() % 100) / 100.0f);
-    p.pos = vec2(0,0) + random + offset;
-    p.color = glm::vec4(rColor, rColor, rColor, 1.0f);
-    p.life = 1.0f;
-    p.velocity = vec2(0,1) * 0.1f;
+    return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
 }

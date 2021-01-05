@@ -10,38 +10,49 @@ using namespace glm;
 #include <vector>
 
 
-struct Particle {
-    glm::vec2 pos, velocity;
-    glm::vec4 color;
-    float     life;
-
-    Particle()
-        : pos(0.0f), velocity(0.0f), color(1.0f), life(0.0f) { }
-};
-
 
 class ParticleSystem
 {
 private:
-    GLuint particleTexture;
+
+    struct Particle {
+        glm::vec3 position;
+        glm::vec3 velocity;
+        float     lifetime;
+    };
+
     GLuint programID;
-    GLuint OffsetID;
-    GLuint ColorID;
 
-    unsigned int maxParticles;
-    unsigned int newParticles;
     std::vector<Particle> particles;
-    unsigned int VAO;
+    vec3 spawnPosition;
+    float spawnRadius;
 
-    unsigned int lastUsedParticle = 0;
+    GLuint vertexBuffer;
+    GLuint positionBuffer;
+    float* particle_position_buffer_data;
+
+    GLuint ViewMatrix;
+    GLuint ProjectionMatrix;
+
+    GLuint ParticleSize;
 
 public:
-    ParticleSystem(unsigned int maxParticles, unsigned int newParticles, GLuint& particleProgram);
+    ParticleSystem(
+        GLuint& particleProgram,
+        unsigned int maxParticles
+    );
     ~ParticleSystem();
-    void DrawParticles();
-    void UpdateParticles();
-    unsigned int getFirstUnusedParticle();
-    void RespawnParticle(Particle p, vec2 offset);
+    void Draw(
+        glm::mat4 ProjectionMatrix,
+        glm::mat4 ViewMatrix
+    );
+    void Update(const float dt);
+    void setUniformParticleSize(const float particleSize);
+
+private:
+    void ParticleSystem::SpawnParticle(unsigned int particleID);
+    void ParticleSystem::UpdatePosition(unsigned int particleID);
+    float RandomNumber(float Min, float Max);
 
 };
 

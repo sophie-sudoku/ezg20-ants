@@ -1,17 +1,24 @@
 #version 330 core
-layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
 
-out vec2 TexCoords;
-out vec4 ParticleColor;
+layout(location = 0) in vec3 vertex;
+layout(location = 1) in vec4 position_lifetime;
 
-uniform mat4 projection;
-uniform vec2 offset;
-uniform vec4 color;
+uniform mat4 V;
+uniform mat4 P;
 
-void main()
-{
-    float scale = 10.0f;
-    TexCoords = vertex.zw;
-    ParticleColor = color;
-    gl_Position = projection * vec4((vertex.xy * scale) + offset, 0.0, 1.0);
+out float lifetime;
+
+void main(){
+
+    lifetime = position_lifetime.w;
+    float particleSize = 0.01;
+    if (lifetime > 1) {
+        //mostly so white particles shine brighter in the middle of the fire without affecting the others too much
+        particleSize = min(0.01 * lifetime, 0.015);
+    }
+
+    //View Projection Adjustments
+    vec4 position_viewspace = V * vec4( position_lifetime.xyz, 1 );
+    position_viewspace.xy += particleSize * (vertex.xy - vec2(0.5));
+    gl_Position = P * position_viewspace;
 }
