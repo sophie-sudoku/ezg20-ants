@@ -24,7 +24,7 @@ using namespace glm;
 #include <SOIL2.h>
 
 #include "shader.hpp"
-#include "controls.hpp"
+#include "camera.hpp"
 #include "vboindexer.hpp"
 #include "mesh.hpp"
 #include "particles.hpp"
@@ -36,6 +36,9 @@ using namespace glm;
 
 int main(void)
 {
+
+	bool userControl = false;
+
 	// Initialise GLFW
 	if (!glfwInit())
 	{
@@ -58,7 +61,11 @@ int main(void)
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	if (userControl) {
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	}
 
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
@@ -69,8 +76,6 @@ int main(void)
 		return -1;
 	}
 
-	// Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	// Setup scene settings
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -187,11 +192,22 @@ int main(void)
 	uint frame = 1.0;
 	bool reverse = false;
 
+	// Setup Camera
+	Camera camera;
+	camera.setupCamera(userControl);
+
 	// Create sound
 	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
-	SoundEngine->play2D("assets/audio/guitar-track.mp3", true);
+	//SoundEngine->play2D("assets/audio/guitar-track.mp3", true);
+
+	static double lastTime = glfwGetTime();
+
 
 	do {
+
+		double currentTime = glfwGetTime();
+		float dt = float(currentTime - lastTime);
+
 		// Animate light
 		std::random_device rd;
 		std::default_random_engine eng(rd());
@@ -228,9 +244,15 @@ int main(void)
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		computeMatricesFromInputs();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		glm::mat4 ViewMatrix = getViewMatrix();
+
+		if (userControl) {
+			camera.computeMatricesFromInputs(dt);
+		}
+		else {
+			camera.updateCamera(dt);
+		}
+		glm::mat4 ProjectionMatrix = camera.getProjectionMatrix();
+		glm::mat4 ViewMatrix = camera.getViewMatrix();
 
 		
 		//Draw cubemap
@@ -316,7 +338,7 @@ int main(void)
 
 
 		//Update Particles and Draw Fire
-		ps->Update(0.03); //TODO: adjust for different framerates by using deltatime
+		ps->Update(dt);
 		ps->Draw(
 			ProjectionMatrix,
 			ViewMatrix);
@@ -325,6 +347,8 @@ int main(void)
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		lastTime = currentTime;
 
 	}
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
