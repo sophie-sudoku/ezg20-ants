@@ -34,38 +34,42 @@ void Camera::setupCamera(bool userControl) {
 
 	else {
 
+		std::vector<vec3> positions;
 		std::vector<float> intervals;
 
 		//Set up positions and interpolation rate between them
 
 		//First position is only used for interpolation
-		this->positions.push_back(this->position + vec3(3, 3, 3));
+		positions.push_back(this->position + vec3(3, 3, 3));
 
 
 		//First real position
-		this->positions.push_back(this->position);
+		positions.push_back(this->position);
 		intervals.push_back(0.005);
-		this->positions.push_back(vec3(0, 2, 0));
+		positions.push_back(vec3(0, 2, 0));
 		intervals.push_back(0.005);
-		this->positions.push_back(vec3(5, 3, 0));
+		positions.push_back(vec3(5, 3, 0));
 		intervals.push_back(0.005);
-		this->positions.push_back(vec3(5, 4, 5));
+		positions.push_back(vec3(5, 4, 5));
 		intervals.push_back(0.005);
-		this->positions.push_back(this->position);
+		positions.push_back(this->position);
 		intervals.push_back(0.005);
-		this->positions.push_back(vec3(0, 2, 0));
+		positions.push_back(vec3(0, 2, 0));
 		intervals.push_back(0.005);
-		this->positions.push_back(vec3(5, 3, 0));
+		positions.push_back(vec3(5, 3, 0));
 		intervals.push_back(0.005);
-		this->positions.push_back(vec3(5, 4, 5));
+		positions.push_back(vec3(5, 4, 5));
 		intervals.push_back(0.005);
-		this->positions.push_back(this->position);
+		positions.push_back(this->position);
 		intervals.push_back(0.005);
 
 		//Last position is only used for interpolation
-		this->positions.push_back(this->position + vec3(3, 3, 3));
+		positions.push_back(this->position + vec3(3, 3, 3));
 
-		this->interpPositions = GetParabolaInterpSpline(intervals);
+
+		addInterpPositions(GetParabolaInterpSpline(positions, intervals));
+		
+		
 		currentInterpPos = 0;
 
 		//TODO: Set up angles and linearly interpolate between them
@@ -242,26 +246,30 @@ mat4 Camera::getProjectionMatrix() {
 	return ProjectionMatrix;
 }
 
+void Camera::addInterpPositions(std::vector<vec3> interpolations) {
+	this->interpPositions.insert(this->interpPositions.end(), interpolations.begin(), interpolations.end());
+}
+
 
 
 // Blended Parabola Interpolation
 // Follwoing code from Assignment 2 of Computeranimation in SS2020 by Jonas Prohaska
 
-std::vector<vec3> Camera::GetParabolaInterpSpline(std::vector<float> intervals)
+std::vector<vec3> Camera::GetParabolaInterpSpline(std::vector<vec3> positions, std::vector<float> intervals)
 {
 
 	std::vector<vec3> interpList;
 
-	if (this->positions.size() < 4) {
+	if (positions.size() < 4) {
 		return interpList;
 	}
-	for (int i = 1; i < this->positions.size() - 2; i++) {
+	for (int i = 1; i < positions.size() - 2; i++) {
 
 		glm::mat4 parabolaXpoints = ConstructParabolaB(
-			this->positions[i - 1], 
-			this->positions[i], 
-			this->positions[i + 1], 
-			this->positions[i + 2]);
+			positions[i - 1], 
+			positions[i], 
+			positions[i + 1], 
+			positions[i + 2]);
 
 		//for interval, interpolate according to theory
 		for (float intervalpos = 0; intervalpos <= 1; intervalpos += intervals[i-1]) {
@@ -271,7 +279,7 @@ std::vector<vec3> Camera::GetParabolaInterpSpline(std::vector<float> intervals)
 	}
 
 	//add last position to end off list
-	interpList.push_back(this->positions[this->positions.size() - 2]);
+	interpList.push_back(positions[positions.size() - 2]);
 	return interpList;
 }
 

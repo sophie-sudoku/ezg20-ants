@@ -28,7 +28,6 @@
     <ClCompile Include="src\demo.cpp" />
     <ClCompile Include="src\cubemap.cpp" />
     <ClCompile Include="src\shadowmap.cpp" />
-    <ClCompile Include="src\test.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vboindexer.cpp" />
   </ItemGroup>

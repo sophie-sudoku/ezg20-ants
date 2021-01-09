@@ -16,7 +16,6 @@ private:
 	float verticalAngle;
 	float initialFoV;
 
-	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> interpPositions;
 	int currentInterpPos;
 
@@ -38,11 +37,11 @@ public:
 	mat4 getProjectionMatrix();
 
 private:
-	std::vector<vec3> GetParabolaInterpSpline(std::vector<float> intervals);
+	void addInterpPositions(std::vector<vec3> interpolations);
+	std::vector<vec3> GetParabolaInterpSpline(std::vector<vec3> positions, std::vector<float> intervals);
 	mat4 ConstructParabolaB(vec3 p1, vec3 p2, vec3 p3, vec3 p4);
 	vec4 multiply1x4by4x4(vec4 a, glm::mat4 b);
 	mat4 multiply4x4by4x4(glm::mat4 a, glm::mat4 b);
-
 };
 
 #endif

@@ -42,9 +42,6 @@
     <ClCompile Include="src\particles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\shadowmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
