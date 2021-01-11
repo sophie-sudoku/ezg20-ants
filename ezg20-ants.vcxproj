@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\JSON\jsoncpp.cpp" />
-    <ClCompile Include="src\controls.cpp" />
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\objloader.cpp" />
     <ClCompile Include="src\particles.cpp" />
@@ -44,12 +44,10 @@
     <None Include="assets\shader\SimpleVertexShader.vert" />
     <None Include="assets\shader\StandardShading.frag" />
     <None Include="assets\shader\StandardShading.vert" />
-    <None Include="assets\shader\Test.frag" />
-    <None Include="assets\shader\testshader.frag" />
     <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\controls.hpp" />
+    <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\mesh.hpp" />
     <ClInclude Include="src\objloader.hpp" />
     <ClInclude Include="src\particles.hpp" />

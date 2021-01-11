@@ -24,9 +24,6 @@
     <ClCompile Include="src\objloader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controls.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\vboindexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,6 +45,9 @@
     <ClCompile Include="src\shadowmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -55,13 +55,11 @@
     <None Include="assets\shader\SimpleVertexShader.vert" />
     <None Include="assets\shader\StandardShading.frag" />
     <None Include="assets\shader\StandardShading.vert" />
-    <None Include="assets\shader\Test.frag" />
     <None Include="Readme.md" />
     <None Include="assets\shader\CubemapShader.vert" />
     <None Include="assets\shader\CubemapShader.frag" />
     <None Include="assets\shader\ParticleShader.frag" />
     <None Include="assets\shader\ParticleShader.vert" />
-    <None Include="assets\shader\testshader.frag" />
     <None Include="assets\shader\DepthShader.frag" />
     <None Include="assets\shader\DepthShader.vert" />
     <None Include="assets\shader\DepthShader.geom" />
@@ -71,9 +69,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\objloader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controls.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\vboindexer.hpp">
@@ -92,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shadowmap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

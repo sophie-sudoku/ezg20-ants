@@ -1,7 +1,6 @@
 #include <vector>
 #include <string>
 #include <stdio.h>
-#include <string>
 #include <GL/glew.h>
 
 #include <assimp/Importer.hpp>
@@ -117,10 +116,13 @@ void ParticleSystem::Draw(
 
 void ParticleSystem::Update(const float dt)
 {
+
+    const float dtscalar = 2; //speed adjustment of flame animation
+
     for (uint i = 0; i < this->particles.size(); ++i)
     {
         // subtract from the particles lifetime
-        this->particles[i].lifetime -= dt;
+        this->particles[i].lifetime -= dt * dtscalar;
 
         // if the lifetime is below 0 respawn the particle
         if (this->particles[i].lifetime <= 0.0f)
@@ -129,7 +131,7 @@ void ParticleSystem::Update(const float dt)
         }
 
         // move the particle down depending on the delta time
-        this->particles[i].position += dt * this->particles[i].velocity;
+        this->particles[i].position += dt * dtscalar * this->particles[i].velocity;
 
         // update the position buffer
         UpdatePosition(i);
