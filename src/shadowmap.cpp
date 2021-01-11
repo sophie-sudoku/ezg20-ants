@@ -17,24 +17,23 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-Shadowmap::Shadowmap(
-)
-{
+Shadowmap::Shadowmap(float viewportWidth, float viewportHeight) {
+	this->viewportWidth = viewportWidth;
+	this->viewportHeight = viewportHeight;
+	
 	VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-
 	
 	depthProgram = LoadShaders("assets/shader/DepthShader.vert", "assets/shader/DepthShader.frag", "assets/shader/DepthShader.geom");
 
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	FramebufferName;
 	glGenFramebuffers(1, &FramebufferName);
 	depthCubemap;
 	glGenTextures(1, &depthCubemap);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 	for (unsigned int i = 0; i < 6; ++i)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, viewportWidth, viewportWidth, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -56,7 +55,7 @@ Shadowmap::~Shadowmap() {
 
 void Shadowmap::DrawSetup() {
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-	glViewport(0, 0, 1024, 1024);
+	glViewport(0, 0, viewportWidth, viewportWidth);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -67,7 +66,7 @@ void Shadowmap::DrawSetup() {
 
 void Shadowmap::DrawTeardown() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 1024, 768);
+	glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
 void Shadowmap::Draw(

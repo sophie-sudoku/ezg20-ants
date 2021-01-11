@@ -54,7 +54,16 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(1024, 768, "Ants", NULL, NULL);
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	
+	float viewportWidth = mode->width;
+	float viewportHeight = mode->height;
+
+	window = glfwCreateWindow(viewportWidth, viewportHeight, "Ants", glfwGetPrimaryMonitor(), NULL);
 	if (window == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		getchar();
@@ -180,7 +189,7 @@ int main(void)
 	ParticleSystem* ps = new ParticleSystem(particleProgram, 100000);
 
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
-	Shadowmap* shadowmap = new Shadowmap();
+	Shadowmap* shadowmap = new Shadowmap(viewportWidth, viewportHeight);
 
 	std::vector<Mesh*> shadowMeshes = {desert, ant, stone, carpet};
 

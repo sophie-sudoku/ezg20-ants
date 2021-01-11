@@ -24,14 +24,15 @@ private:
     GLuint depthProgram;
     GLuint VertexArrayID;
     GLuint FramebufferName;
+    float viewportWidth;
+    float viewportHeight;
 public:
     unsigned int depthCubemap;
-    Shadowmap();
+    Shadowmap(float viewportWidth, float viewportHeight);
     ~Shadowmap();
     void DrawSetup();
     void DrawTeardown();
     void Draw(Mesh * mesh, glm::vec3 lightPos);
 };
-
 
 #endif
