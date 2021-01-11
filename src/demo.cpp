@@ -38,7 +38,7 @@ using namespace glm;
 int main(void)
 {
 
-	bool userControl = false;
+	bool userControl = true;
 
 	// Initialise GLFW
 	if (!glfwInit())
@@ -117,9 +117,12 @@ int main(void)
 	desert->SetShader(standardProgram, "assets/textures/desert_diffuse.png", defaultColor);
 	desert->SetupMesh();
 	
-	Mesh *ant = new Mesh("assets/models/ant_sitting.obj");
-	ant->SetShader(standardProgram, "", glm::vec3(0.2, 0.0, 0.0));
-	ant->SetupMesh();
+	Mesh * antbody = new Mesh("assets/models/ant_sitting_body.obj");
+	antbody->SetShader(standardProgram, "", glm::vec3(0.1, 0.0, 0.0));
+	antbody->SetupMesh();
+	Mesh* antlegs = new Mesh("assets/models/ant_sitting_legs_eyes.obj");
+	antlegs->SetShader(standardProgram, "", glm::vec3(0.02, 0.0, 0.0));
+	antlegs->SetupMesh();
 
 	std::vector<glm::mat4> antPositions;
 	antPositions.push_back(makeMat4(Json::writeString(builder, positions["ant_1"])));
@@ -149,6 +152,10 @@ int main(void)
 	Mesh* carpet = new Mesh("assets/models/carpet.obj");
 	carpet->SetShader(standardProgram, "assets/textures/carpet_diffuse.png", defaultColor);
 	carpet->SetupMesh();
+
+	Mesh* guitar = new Mesh("assets/models/guitar.obj");
+	guitar->SetShader(standardProgram, "assets/textures/guitar.png", defaultColor);
+	guitar->SetupMesh();
 
 	std::vector<glm::mat4> grasPositions;
 	grasPositions.push_back(makeMat4(Json::writeString(builder, positions["gras_1"])));
@@ -191,7 +198,7 @@ int main(void)
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 	Shadowmap* shadowmap = new Shadowmap(viewportWidth, viewportHeight);
 
-	std::vector<Mesh*> shadowMeshes = {desert, ant, stone, carpet};
+	std::vector<Mesh*> shadowMeshes = {desert, antbody, antlegs, stone, carpet, guitar};
 
 	for (Mesh* mesh : shadowMeshes) {
 		mesh->SetDepthTexture(shadowmap->depthCubemap);
@@ -208,10 +215,11 @@ int main(void)
 
 	// Create sound
 	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
-	//SoundEngine->play2D("assets/audio/guitar-track.mp3", true);
+	SoundEngine->play2D("assets/audio/guitar-track.mp3", true);
 
 	static double lastTime = glfwGetTime();
 
+	static glm::mat4 animationAnt = { 0.9920015703498424, -0.12622552999867662, 0.0, 0.0, 0.12622552999867662, 0.9920015703498424, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -0.05726920205565056, 0.1043004055201675, 0.0, 1.0 };
 
 	do {
 
@@ -234,6 +242,7 @@ int main(void)
 		// Remove +distr(eng) if the flickering is disturbing
 		lightPos.y = (0.8 + (frame / 80.0))+distr(eng);
 
+
 		// Draw shadows to shadow map
 		shadowmap->DrawSetup();
 		
@@ -242,11 +251,13 @@ int main(void)
 			shadowmap->Draw(stone, lightPos);
 		}
 		for (auto& position : antPositions) {
-			ant->SetTransform(position);
-			shadowmap->Draw(ant, lightPos);
+			antbody->SetTransform(position);
+			shadowmap->Draw(antbody, lightPos);
+			antlegs->SetTransform(position);
+			shadowmap->Draw(antlegs, lightPos);
 		}
-
 		shadowmap->Draw(desert, lightPos);
+		shadowmap->Draw(guitar, lightPos);
 		shadowmap->Draw(carpet, lightPos);
 		shadowmap->DrawTeardown();
 
@@ -302,11 +313,24 @@ int main(void)
 				lightPos
 			);
 		}
+		// Animation Ants
+		glm::mat4 animation = glm::mat4(1.0);
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				animation[i][j] -= (animation[i][j] - animationAnt[i][j]) * glm::sin(glfwGetTime());
+			}
+		}
 
 		//Draw Ants
 		for (auto &position : antPositions) {
-			ant->SetTransform(position);
-			ant->Draw(
+			antbody->SetTransform(position * animation);
+			antbody->Draw(
+				ProjectionMatrix,
+				ViewMatrix,
+				lightPos
+			);
+			antlegs->SetTransform(position * animation);
+			antlegs->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
 				lightPos
@@ -337,6 +361,12 @@ int main(void)
 			lightPos
 		);
 
+		//Draw Guitar
+		guitar->Draw(
+			ProjectionMatrix,
+			ViewMatrix,
+			lightPos
+		);
 
 		//Update Particles and Draw Fire
 		ps->Update(dt);
@@ -361,11 +391,13 @@ int main(void)
 
 	// Clean up Meshes
 	delete desert;
-	delete ant;
+	delete antbody;
+	delete antlegs;
 	delete cactus;
 	delete log;
 	delete stones;
 	delete carpet;
+	delete guitar;
 
 	// Clean up cubemap & particle system
 	delete sky;
