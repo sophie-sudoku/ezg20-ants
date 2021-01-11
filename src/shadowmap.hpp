@@ -24,23 +24,8 @@ private:
     GLuint depthProgram;
     GLuint VertexArrayID;
     GLuint FramebufferName;
-    // The bias matrix is used to map values from [-1,1] to [0,1],
-    // to map depthMVP values to texture sampling values
-    glm::mat4 biasMatrix = mat4(
-        0.5, 0.0, 0.0, 0.0,
-        0.0, 0.5, 0.0, 0.0,
-        0.0, 0.0, 0.5, 0.0,
-        0.5, 0.5, 0.5, 1.0
-    );
-    glm::mat4 depthMVP = mat4(
-        0.5, 0.0, 0.0, 0.0,
-        0.0, 0.5, 0.0, 0.0,
-        0.0, 0.0, 0.5, 0.0,
-        0.5, 0.5, 0.5, 1.0
-    );
 public:
-    GLuint depthTexture;
-    glm::mat4 depthBiasMVP;
+    unsigned int depthCubemap;
     Shadowmap();
     ~Shadowmap();
     void DrawSetup();

@@ -12,6 +12,7 @@
 
 #include "mesh.hpp"
 #include "objloader.hpp"
+#include <iostream>
 
 Mesh::Mesh(
     const char * path
@@ -73,7 +74,6 @@ void Mesh::SetShader(
 	ColorID = glGetUniformLocation(programID, "myColor");
 	LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
 	UseTextureID = glGetUniformLocation(programID, "useTexture");
-	DepthBiasID = glGetUniformLocation(programID, "DepthBiasMVP");
 	DepthTextureID = glGetUniformLocation(programID, "shadowMap");
 	UseDepthTextureID = glGetUniformLocation(programID, "useDepthTexture");
 }
@@ -95,8 +95,7 @@ void Mesh::SetDepthTexture(
 void Mesh::Draw(
 	glm::mat4 ProjectionMatrix,
 	glm::mat4 ViewMatrix,
-	glm::vec3 lightPos,
-	glm::mat4 depthBiasMVP
+	glm::vec3 lightPos
 )
 {
 	glUseProgram(programID);
@@ -108,7 +107,6 @@ void Mesh::Draw(
 	glm::mat4 MVP1 = ProjectionMatrix * ViewMatrix * ModelMatrix;
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP1[0][0]);
 	glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
-	glUniformMatrix4fv(DepthBiasID, 1, GL_FALSE, &depthBiasMVP[0][0]);
 
 	if (Texture) {
 		glActiveTexture(GL_TEXTURE0);
@@ -117,7 +115,7 @@ void Mesh::Draw(
 	}
 	if (DepthTexture) {
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, DepthTexture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, DepthTexture);
 		glUniform1i(DepthTextureID, 1);
 		glUniform1i(UseDepthTextureID, true);
 	}

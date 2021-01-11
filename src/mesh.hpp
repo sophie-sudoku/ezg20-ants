@@ -37,6 +37,7 @@ public:
     GLuint normalbuffer;
     GLuint elementbuffer;
     glm::mat4 ModelMatrix = glm::mat4(1.0);
+    glm::mat4 depthBiasMVP = glm::mat4(1.0);
     Mesh(const char* path);
     ~Mesh();
     void SetShader(GLuint& programID, const char* path, glm::vec3& color);
@@ -44,14 +45,16 @@ public:
     void Draw(
         glm::mat4 ProjectionMatrix,
         glm::mat4 ViewMatrix,
-        glm::vec3 lightPos,
-        glm::mat4 depthBiasMVP
+        glm::vec3 lightPos
     );
     void SetTransform(
         glm::mat4 transform
     );
     void Mesh::SetDepthTexture(
         GLuint& DepthTexture
+    );
+    void Mesh::SetDepthBiasMVP(
+        glm::mat4 depthBiasMVP
     );
 
 private:

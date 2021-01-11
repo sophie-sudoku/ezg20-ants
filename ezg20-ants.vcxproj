@@ -28,7 +28,6 @@
     <ClCompile Include="src\demo.cpp" />
     <ClCompile Include="src\cubemap.cpp" />
     <ClCompile Include="src\shadowmap.cpp" />
-    <ClCompile Include="src\test.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vboindexer.cpp" />
   </ItemGroup>
@@ -37,6 +36,7 @@
     <None Include="assets\shader\CubemapShader.frag" />
     <None Include="assets\shader\CubemapShader.vert" />
     <None Include="assets\shader\DepthShader.frag" />
+    <None Include="assets\shader\DepthShader.geom" />
     <None Include="assets\shader\DepthShader.vert" />
     <None Include="assets\shader\ParticleShader.frag" />
     <None Include="assets\shader\ParticleShader.vert" />

@@ -45,9 +45,6 @@
     <ClCompile Include="src\particles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\shadowmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,6 +64,7 @@
     <None Include="assets\shader\testshader.frag" />
     <None Include="assets\shader\DepthShader.frag" />
     <None Include="assets\shader\DepthShader.vert" />
+    <None Include="assets\shader\DepthShader.geom" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">

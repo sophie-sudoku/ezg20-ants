@@ -24,38 +24,40 @@ Shadowmap::Shadowmap(
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	depthProgram = LoadShaders("assets/shader/DepthShader.vert", "assets/shader/DepthShader.frag");
+	
+	depthProgram = LoadShaders("assets/shader/DepthShader.vert", "assets/shader/DepthShader.frag", "assets/shader/DepthShader.geom");
 
-	FramebufferName = 0;
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	FramebufferName;
 	glGenFramebuffers(1, &FramebufferName);
+	depthCubemap;
+	glGenTextures(1, &depthCubemap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+	for (unsigned int i = 0; i < 6; ++i)
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-
-	depthTexture;
-	glGenTextures(1, &depthTexture);
-	glBindTexture(GL_TEXTURE_2D, depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
-
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
 	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 Shadowmap::~Shadowmap() {
 	glDeleteProgram(depthProgram);
 	glDeleteFramebuffers(1, &FramebufferName);
-	glDeleteTextures(1, &depthTexture);
+	glDeleteTextures(1, &depthCubemap);
 	glDeleteVertexArrays(1, &VertexArrayID);
 }
 
 void Shadowmap::DrawSetup() {
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 	glViewport(0, 0, 1024, 1024);
+	glClear(GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -73,15 +75,25 @@ void Shadowmap::Draw(
 	glm::vec3 lightPos
 )
 {
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 20);
-	glm::mat4 depthViewMatrix = glm::lookAt(lightPos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	float near_plane = 1.0f;
+	float far_plane = 25.0f;
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near_plane, far_plane);
 
-	glm::mat4 depthModelMatrix = glm::mat4(1.0);
-	depthMVP = depthProjectionMatrix * depthViewMatrix * mesh->ModelMatrix;
-	depthBiasMVP = biasMatrix * depthMVP;
-
-	GLuint depthMatrixID = glGetUniformLocation(depthProgram, "depthMVP");
-	glUniformMatrix4fv(depthMatrixID, 1, GL_FALSE, &depthMVP[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "shadowMatrix1"), 1, GL_FALSE, &(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)))[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "shadowMatrix2"), 1, GL_FALSE, &(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)))[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "shadowMatrix3"), 1, GL_FALSE, &(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)))[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "shadowMatrix4"), 1, GL_FALSE, &(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)))[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "shadowMatrix5"), 1, GL_FALSE, &(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)))[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "shadowMatrix6"), 1, GL_FALSE, &(shadowProj *
+		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)))[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(depthProgram, "model"), 1, GL_FALSE, &mesh->ModelMatrix[0][0]);
+	glUniform1f(glGetUniformLocation(depthProgram, "far_plane"), far_plane);
+	glUniform3f(glGetUniformLocation(depthProgram, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexbuffer);

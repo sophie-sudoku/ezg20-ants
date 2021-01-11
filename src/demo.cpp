@@ -34,6 +34,7 @@ using namespace glm;
 
 #include <sstream>
 
+
 int main(void)
 {
 	// Initialise GLFW
@@ -179,7 +180,7 @@ int main(void)
 	std::vector<Mesh*> shadowMeshes = {desert, ant, stone, carpet};
 
 	for (Mesh* mesh : shadowMeshes) {
-		mesh->SetDepthTexture(shadowmap->depthTexture);
+		mesh->SetDepthTexture(shadowmap->depthCubemap);
 	}
 
 	// Lightsource: Fire
@@ -224,7 +225,6 @@ int main(void)
 		shadowmap->Draw(carpet, lightPos);
 		shadowmap->DrawTeardown();
 
-
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -242,16 +242,14 @@ int main(void)
 		desert->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos,
-			shadowmap->depthBiasMVP
+			lightPos
 		);
 
 		//Draw carpet
 		carpet->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos,
-			shadowmap->depthBiasMVP
+			lightPos
 		);
 
 		//Draw grass
@@ -260,8 +258,7 @@ int main(void)
 			gras->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos,
-				shadowmap->depthBiasMVP
+				lightPos
 			);
 		}
 
@@ -271,8 +268,7 @@ int main(void)
 			stone->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos,
-				shadowmap->depthBiasMVP
+				lightPos
 			);
 		}
 
@@ -282,8 +278,7 @@ int main(void)
 			ant->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos,
-				shadowmap->depthBiasMVP
+				lightPos
 			);
 		}
 
@@ -293,8 +288,7 @@ int main(void)
 			cactus->Draw(
 				ProjectionMatrix,
 				ViewMatrix,
-				lightPos,
-				shadowmap->depthBiasMVP
+				lightPos
 			);
 		}
 
@@ -302,16 +296,14 @@ int main(void)
 		stones->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos,
-			shadowmap->depthBiasMVP
+			lightPos
 		);
 
 		//Draw Log
 		log->Draw(
 			ProjectionMatrix,
 			ViewMatrix,
-			lightPos,
-			shadowmap->depthBiasMVP
+			lightPos
 		);
 
 
@@ -320,7 +312,6 @@ int main(void)
 		ps->Draw(
 			ProjectionMatrix,
 			ViewMatrix);
-
 
 		// Swap buffers
 		glfwSwapBuffers(window);

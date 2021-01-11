@@ -4,22 +4,21 @@ layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec2 vertexUV;
 layout(location = 2) in vec3 vertexNormal_modelspace;
 
+//TexCoord
 out vec2 UV;
+// FragPos
 out vec3 Position_worldspace;
 out vec3 Normal_cameraspace;
 out vec3 EyeDirection_cameraspace;
 out vec3 LightDirection_cameraspace;
-out vec4 ShadowCoord;
 
 uniform mat4 MVP;
 uniform mat4 V;
 uniform mat4 M;
 uniform vec3 LightPosition_worldspace;
-uniform mat4 DepthBiasMVP;
 
 void main(){
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
-	ShadowCoord = DepthBiasMVP * vec4(vertexPosition_modelspace,1);
 	Position_worldspace = (M * vec4(vertexPosition_modelspace,1)).xyz;
 	vec3 vertexPosition_cameraspace = ( V * M * vec4(vertexPosition_modelspace,1)).xyz;
 	EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;
