@@ -1,1 +1,2 @@
 C:\prog\ezg20-ants\Release\ezg20-ants.exe
+C:\Users\kecks\source\repos\ezg20-ants\Release\ezg20-ants.exe

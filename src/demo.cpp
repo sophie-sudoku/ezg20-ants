@@ -38,7 +38,7 @@ using namespace glm;
 int main(void)
 {
 
-	bool userControl = true;
+	bool userControl = false;
 
 	// Initialise GLFW
 	if (!glfwInit())
@@ -72,10 +72,8 @@ int main(void)
 	}
 	glfwMakeContextCurrent(window);
 
-	if (userControl) {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	}
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	// Initialize GLEW
 	glewExperimental = true; // Needed for core profile
@@ -215,11 +213,12 @@ int main(void)
 
 	// Create sound
 	irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
-	SoundEngine->play2D("assets/audio/guitar-track.mp3", true);
+	SoundEngine->play2D("assets/audio/darkwasthenight.mp3", true);
+	
+	static glm::mat4 animationAnt = { 0.9920015703498424, -0.12622552999867662, 0.0, 0.0, 0.12622552999867662, 0.9920015703498424, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -0.05726920205565056, 0.1043004055201675, 0.0, 1.0 };
 
 	static double lastTime = glfwGetTime();
-
-	static glm::mat4 animationAnt = { 0.9920015703498424, -0.12622552999867662, 0.0, 0.0, 0.12622552999867662, 0.9920015703498424, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -0.05726920205565056, 0.1043004055201675, 0.0, 1.0 };
+	bool cameraPathFinished = false;
 
 	do {
 
@@ -269,7 +268,7 @@ int main(void)
 			camera.computeMatricesFromInputs(dt);
 		}
 		else {
-			camera.updateCamera(dt);
+			cameraPathFinished = camera.updateCamera(dt);
 		}
 		glm::mat4 ProjectionMatrix = camera.getProjectionMatrix();
 		glm::mat4 ViewMatrix = camera.getViewMatrix();
@@ -382,7 +381,7 @@ int main(void)
 
 	}
 	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0);
+		glfwWindowShouldClose(window) == 0 && !cameraPathFinished);
 
 	// Cleanup shaders
 	glDeleteProgram(standardProgram);

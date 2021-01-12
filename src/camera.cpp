@@ -19,7 +19,7 @@ void Camera::setupCamera(bool userControl) {
 	// Initial vertical angle : none
 	this->verticalAngle = 6.06f;
 	// Initial Field of View
-	this->initialFoV = 45.0f;
+	this->FoV = 45.0f;
 
 
 	if (userControl) {
@@ -27,6 +27,7 @@ void Camera::setupCamera(bool userControl) {
 		this->orbit = false;
 		this->orbitRadius = 10.0f;
 		this->F_currently_pressed = false;
+		this->Cpressed = false;
 		this->initialMousePosition = true;
 		this->speed = 3.0f; // 3 units / second
 		this->mouseSpeed = 0.005f;
@@ -35,54 +36,273 @@ void Camera::setupCamera(bool userControl) {
 	else {
 
 		std::vector<vec3> positions;
+		std::vector<vec3> angles; //x: horizontal, y: vertical, z: fov
 		std::vector<float> intervals;
 
-		//Set up positions and interpolation rate between them
+		//addCut sends the position to be interpolated, so that "cuts" can be made between them
+		auto addCut = [&]() {
+				addInterpPositions( GetParabolaInterpolation(positions, intervals) );
+				addInterpAngles( GetParabolaInterpolation(angles, intervals) );
 
-		//First position is only used for interpolation
-		positions.push_back(this->position + vec3(3, 3, 3));
+				positions.clear();
+				angles.clear();
+				intervals.clear();
+		};
 
+		//Set up positions, angles and interpolation rate between them
+
+		//First and last position is only used for blended parabola interpolation
+		positions.push_back(this->position);
+		angles.push_back(vec3(this->horizontalAngle, this->verticalAngle, this->FoV));
 
 		//First real position
-		positions.push_back(this->position);
-		intervals.push_back(0.005);
-		positions.push_back(vec3(0, 2, 0));
-		intervals.push_back(0.005);
-		positions.push_back(vec3(5, 3, 0));
-		intervals.push_back(0.005);
-		positions.push_back(vec3(5, 4, 5));
-		intervals.push_back(0.005);
-		positions.push_back(this->position);
-		intervals.push_back(0.005);
-		positions.push_back(vec3(0, 2, 0));
-		intervals.push_back(0.005);
-		positions.push_back(vec3(5, 3, 0));
-		intervals.push_back(0.005);
-		positions.push_back(vec3(5, 4, 5));
-		intervals.push_back(0.005);
-		positions.push_back(this->position);
+		positions.push_back(vec3(10.87, -4.12, 21.4));
+		angles.push_back(vec3(-1.87, 7.05, this->FoV));
+		
+		//Interval to interpolate between positions (less = slower transistion between positions)
 		intervals.push_back(0.005);
 
-		//Last position is only used for interpolation
-		positions.push_back(this->position + vec3(3, 3, 3));
+		positions.push_back(vec3(6.32, 3.69, 26.99));
+		angles.push_back(vec3(-2.47, 6.71, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-0.24, 9.74, 26.52));
+		angles.push_back(vec3(-3.32, 6.15, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-11.35, 4.53, 10.68));
+		angles.push_back(vec3(-4.07, 6.03, this->FoV));
+		
+		intervals.push_back(0.0045);
+
+		positions.push_back(vec3(-7.5, 3.29, -0.46));
+		angles.push_back(vec3(-5.36, 6.03, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-2.18, 2.64, -1.09));
+		angles.push_back(vec3(-6.18, 6.09, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-2.9, 1.8, 0.82));
+		angles.push_back(vec3(-6.16, 6.74, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-2.722158, 2.246655, 3.824823));
+		angles.push_back(vec3(-5.95, 7.325057, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-3.226718, 3.176694, 6.013127));
+		angles.push_back(vec3(-4.775071, 5.969983, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-5.344382, 2.885156, 4.831669));
+		angles.push_back(vec3(-4.875073, 6.214976, this->FoV));
+
+		//last position only for interpolation
+		positions.push_back(vec3(-5.558214, 2.024369, 3.861058));
+		angles.push_back(vec3(-5.515075, 6.139987, this->FoV));
 
 
-		addInterpPositions(GetParabolaInterpSpline(positions, intervals));
+		addCut();
+
+		//Ant Sitting Still
+
+		positions.push_back(vec3(-3.192017, 0.961560, 2.891199));
+		angles.push_back(vec3(-4.915076, 6.424987, this->FoV));
+
+
+		positions.push_back(vec3(-3.192017, 0.961560, 2.891199));
+		angles.push_back(vec3(-4.915076, 6.424987, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-3.192017, 0.961560, 2.891199));
+		angles.push_back(vec3(-4.915076, 6.424987, this->FoV));
+		
+
+		positions.push_back(vec3(-3.192017, 0.961560, 2.891199));
+		angles.push_back(vec3(-4.915076, 6.424987, this->FoV));
+
+
+		addCut();
+
+		//Ant Sitting Still 2
+
+		positions.push_back(vec3(-5.558214, 2.024369, 3.861058));
+		angles.push_back(vec3(-5.515075, 6.139987, this->FoV));
+		
+
+		positions.push_back(vec3(-5.558214, 2.024369, 3.861058));
+		angles.push_back(vec3(-5.515075, 6.139987, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-5.558214, 2.024369, 3.861058));
+		angles.push_back(vec3(-5.515075, 6.139987, this->FoV));
+
+
+		positions.push_back(vec3(-5.558214, 2.024369, 3.861058));
+		angles.push_back(vec3(-5.515075, 6.139987, this->FoV));
+		
+
+		addCut();
+
+		//Pan around the fire
+
+		positions.push_back(vec3(-0.344633, -0.683054, 3.762594));
+		angles.push_back(vec3(-7.780073, 7.144987, this->FoV));
+
+
+		positions.push_back(vec3(-0.344633, -0.683054, 3.762594));
+		angles.push_back(vec3(-7.780073, 7.144987, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-0.054343, 2.751772, 3.322370));
+		angles.push_back(vec3(-7.710071, 6.629993, this->FoV));
+		
+		intervals.push_back(0.0065);
+
+		positions.push_back(vec3(-2.704219, 4.743681, 2.261542));
+		angles.push_back(vec3(-6.625063, 5.749993, this->FoV));
+		
+		intervals.push_back(0.008);
+
+		positions.push_back(vec3(-4.908272, 3.708614, 3.949534));
+		angles.push_back(vec3(-5.745038, 5.839998, this->FoV));
+		
+		intervals.push_back(0.009);
+
+		positions.push_back(vec3(-4.247889, 3.058974, 5.797277));
+		angles.push_back(vec3(-4.970037, 5.960000, this->FoV));
+		
+		intervals.push_back(0.009);
+
+		positions.push_back(vec3(-2.543034, 2.514938, 6.812670));
+		angles.push_back(vec3(-3.935034, 6.125004, this->FoV));
+		
+		intervals.push_back(0.008);
+		
+		positions.push_back(vec3(-0.638485, 2.353522, 6.067216));
+		angles.push_back(vec3(-3.045032, 6.195005, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(0.926948, 1.256024, 2.733205));
+		angles.push_back(vec3(-1.470020, 6.375004, this->FoV));
+		
+		intervals.push_back(0.004);
+
+		positions.push_back(vec3(-3.271664, 1.331918, -1.151470));
+		angles.push_back(vec3(-0.335021, 6.345004, this->FoV));
+		
+		intervals.push_back(0.004);
+
+		positions.push_back(vec3(-6.928247, 1.292648, -2.209969));
+		angles.push_back(vec3(0.489979, 6.355004, this->FoV));
+		
+		intervals.push_back(0.0055);
+
+		positions.push_back(vec3(-5.627995, 1.212076, -4.013000));
+		angles.push_back(vec3(0.384979, 6.390005, this->FoV));
+		
+		intervals.push_back(0.006);
+
+		positions.push_back(vec3(-3.232066, 1.916432, -1.213088));
+		angles.push_back(vec3(0.184974, 6.070035, this->FoV));
+		
+		intervals.push_back(0.006);
+
+		positions.push_back(vec3(-3.129624, 1.255944, 2.321906));
+		angles.push_back(vec3(0.259974, 5.980045, this->FoV));
+		
+		intervals.push_back(0.006);
+
+		positions.push_back(vec3(-3.129624, 1.255944, 2.321906));
+		angles.push_back(vec3(0.194974, 6.65, this->FoV));
+		
+		intervals.push_back(0.0085);
+
+		positions.push_back(vec3(-3.129624, 1.255944, 2.321906));
+		angles.push_back(vec3(0.194974, 7.100070, this->FoV));
+
+
+		positions.push_back(vec3(-3.129624, 1.255944, 2.321906));
+		angles.push_back(vec3(0.194974, 7.100070, this->FoV));
 		
 		
+		addCut();
+
+		//Going upwards from the fire
+
+		positions.push_back(vec3(-2.582639, 1.009217, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+
+
+		positions.push_back(vec3(-2.582639, 2.009217, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+		
+		intervals.push_back(0.004);
+
+		positions.push_back(vec3(-2.582639, 3.009217, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+		
+		intervals.push_back(0.004);
+
+		positions.push_back(vec3(-2.582639, 4.009217, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-2.582639, 7.097607, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+		
+		intervals.push_back(0.005);
+
+		positions.push_back(vec3(-2.582639, 14.597607, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+		
+		intervals.push_back(0.004);
+
+		positions.push_back(vec3(-2.582639, 29.597607, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+		
+		intervals.push_back(0.004);
+
+		positions.push_back(vec3(-2.582639, 35, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+
+
+		positions.push_back(vec3(-2.582639, 35, 4.647204));
+		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
+
+
+		addCut();
 		currentInterpPos = 0;
-
-		//TODO: Set up angles and linearly interpolate between them
 
 	}
 }
 
-void Camera::updateCamera(float dt) {
+bool Camera::updateCamera(const float dt) {
 
-	// Interpolate to next position, TODO: based on dt 
-	this->position = interpPositions[currentInterpPos];
-	currentInterpPos++;
-	if (currentInterpPos >= interpPositions.size()) { currentInterpPos = 0; }
+	float dtscalar = 50;
+	bool cameraPathFinished = false;
+
+	// Interpolate to next position
+	this->position = interpPositions[int(currentInterpPos)];
+	this->horizontalAngle = interpAngles[int(currentInterpPos)].x;
+	this->verticalAngle = interpAngles[int(currentInterpPos)].y;
+	this->FoV = interpAngles[int(currentInterpPos)].z;
+	currentInterpPos += (dt * dtscalar);
+
+	if (currentInterpPos >= interpPositions.size()) { cameraPathFinished = true; } //this ends the program after this frame
 
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	glm::vec3 direction(
@@ -103,17 +323,19 @@ void Camera::updateCamera(float dt) {
 
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	ProjectionMatrix = glm::perspective(glm::radians(initialFoV), 4.0f / 3.0f, 0.1f, 100.0f);
+	ProjectionMatrix = glm::perspective(glm::radians(this->FoV), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
 		this->position,      // Camera is here
 		this->position + direction,		// and looks here : at the same position, plus "direction"
 		up					// Head is up (set to 0,-1,0 to look upside-down)
 	);
+
+	return cameraPathFinished;
 }
 
 
-void Camera::computeMatricesFromInputs(float dt) {
+void Camera::computeMatricesFromInputs(const float dt) {
 
 	// Get mouse position
 	double xpos, ypos;
@@ -124,23 +346,23 @@ void Camera::computeMatricesFromInputs(float dt) {
 
 	// Compute new orientation based on mouse
 	if (!initialMousePosition) { //see comment in global variable
-		horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
-		verticalAngle += mouseSpeed * float(768 / 2 - ypos);
+		this->horizontalAngle += mouseSpeed * float(1024 / 2 - xpos);
+		this->verticalAngle += mouseSpeed * float(768 / 2 - ypos);
 	}
 	else { initialMousePosition = false; }
 	
 	// Direction : Spherical coordinates to Cartesian coordinates conversion
 	glm::vec3 direction(
-		cos(verticalAngle) * sin(horizontalAngle),
-		sin(verticalAngle),
-		cos(verticalAngle) * cos(horizontalAngle)
+		cos(this->verticalAngle) * sin(this->horizontalAngle),
+		sin(this->verticalAngle),
+		cos(this->verticalAngle) * cos(this->horizontalAngle)
 	);
 
 	// Right vector
 	glm::vec3 right = glm::vec3(
-		sin(horizontalAngle - 3.14f / 2.0f),
+		sin(this->horizontalAngle - 3.14f / 2.0f),
 		0,
-		cos(horizontalAngle - 3.14f / 2.0f)
+		cos(this->horizontalAngle - 3.14f / 2.0f)
 	);
 
 	// Up vector
@@ -156,18 +378,6 @@ void Camera::computeMatricesFromInputs(float dt) {
 	}
 	else {
 		F_currently_pressed = false;
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
-		printf("break");
-		printf("Horizontal Angle: %f ,", horizontalAngle);
-		printf("Vertical Angle: %f ,", verticalAngle);
-		printf("X: %f ,", position.x);
-		printf("Y: %f ,", position.y);
-		printf("Z: %f ,", position.z);
-		printf("xpos: %f ,", xpos);
-		printf("ypos: %f ,", ypos);
-		printf("go on");
 	}
 
 
@@ -200,19 +410,19 @@ void Camera::computeMatricesFromInputs(float dt) {
 
 		// Move forward
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			position += direction * dt * speed;
+			this->position += direction * dt * speed;
 		}
 		// Move backward
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			position -= direction * dt * speed;
+			this->position -= direction * dt * speed;
 		}
 		// Strafe right
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			position += right * dt * speed;
+			this->position += right * dt * speed;
 		}
 		// Strafe left
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			position -= right * dt * speed;
+			this->position -= right * dt * speed;
 		}
 
 
@@ -221,11 +431,28 @@ void Camera::computeMatricesFromInputs(float dt) {
 		finalDirection = position + direction;
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
+		if (!this->Cpressed) {
+			this->Cpressed = true;
+			printf("\n");
+			printf("positions.push_back(vec3(%f", this->position.x);
+			printf(", %f", this->position.y);
+			printf(", %f", this->position.z);
+			printf("));\n");
+			printf("angles.push_back(vec3(%f", this->horizontalAngle);
+			printf(", %f", this->verticalAngle);
+			printf(", this->FoV));\n");
+			printf("intervals.push_back(0.005);\n");
+		}
+	}
 
-	float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
+	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS) {
+		this->Cpressed = false;
+	}
+
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	ProjectionMatrix = glm::perspective(glm::radians(FoV), 4.0f / 3.0f, 0.1f, 100.0f);
+	ProjectionMatrix = glm::perspective(glm::radians(this->FoV), 4.0f / 3.0f, 0.1f, 100.0f);
 	// Camera matrix
 	ViewMatrix = glm::lookAt(
 		finalPosition,      // Camera is here
@@ -250,14 +477,17 @@ void Camera::addInterpPositions(std::vector<vec3> interpolations) {
 	this->interpPositions.insert(this->interpPositions.end(), interpolations.begin(), interpolations.end());
 }
 
+void Camera::addInterpAngles(std::vector<vec3> interpolations) {
+	this->interpAngles.insert(this->interpAngles.end(), interpolations.begin(), interpolations.end());
+}
+
 
 
 // Blended Parabola Interpolation
 // Follwoing code from Assignment 2 of Computeranimation in SS2020 by Jonas Prohaska
 
-std::vector<vec3> Camera::GetParabolaInterpSpline(std::vector<vec3> positions, std::vector<float> intervals)
+std::vector<vec3> Camera::GetParabolaInterpolation(std::vector<vec3> positions, std::vector<float> intervals)
 {
-
 	std::vector<vec3> interpList;
 
 	if (positions.size() < 4) {
