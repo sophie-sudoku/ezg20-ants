@@ -196,14 +196,14 @@ int main(void)
 	Cubemap* sky = new Cubemap("cubemap", 1.0f, cubemapProgram);
 	Shadowmap* shadowmap = new Shadowmap(viewportWidth, viewportHeight);
 
-	std::vector<Mesh*> shadowMeshes = {desert, antbody, antlegs, stone, carpet, guitar};
+	std::vector<Mesh*> shadowMeshes = {desert, antbody, antlegs, stone, stones, carpet, guitar};
 
 	for (Mesh* mesh : shadowMeshes) {
 		mesh->SetDepthTexture(shadowmap->depthCubemap);
 	}
 
 	// Lightsource: Fire
-	glm::vec3 lightPos = glm::vec3(-2.8, 1.2, 4.5);
+	glm::vec3 lightPos = glm::vec3(-2.8, 2.2, 4.5);
 	uint frame = 1.0;
 	bool reverse = false;
 
@@ -239,12 +239,15 @@ int main(void)
 			reverse = !reverse;
 		}
 		// Remove +distr(eng) if the flickering is disturbing
-		lightPos.y = (0.8 + (frame / 80.0))+distr(eng);
+		lightPos.y = (1.8 + (frame / 80.0))+distr(eng);
 
 
 		// Draw shadows to shadow map
 		shadowmap->DrawSetup();
-		
+		shadowmap->Draw(desert, lightPos);
+		shadowmap->Draw(guitar, lightPos);
+		shadowmap->Draw(carpet, lightPos);
+		shadowmap->Draw(stones, lightPos);
 		for (auto& position : stonePositions) {
 			stone->SetTransform(position);
 			shadowmap->Draw(stone, lightPos);
@@ -255,11 +258,7 @@ int main(void)
 			antlegs->SetTransform(position);
 			shadowmap->Draw(antlegs, lightPos);
 		}
-		shadowmap->Draw(desert, lightPos);
-		shadowmap->Draw(guitar, lightPos);
-		shadowmap->Draw(carpet, lightPos);
 		shadowmap->DrawTeardown();
-
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -273,7 +272,7 @@ int main(void)
 		glm::mat4 ProjectionMatrix = camera.getProjectionMatrix();
 		glm::mat4 ViewMatrix = camera.getViewMatrix();
 
-		
+
 		//Draw cubemap
 		sky->Draw(
 			ProjectionMatrix,

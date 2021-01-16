@@ -17,8 +17,7 @@ uniform bool useTexture;
 uniform bool useDepthTexture;
 uniform samplerCube shadowMap;
 
-// array of offset direction for sampling
-vec3 gridSamplingDisk[20] = vec3[]
+vec3 offsets[20] = vec3[]
 (
    vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
    vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
@@ -26,27 +25,6 @@ vec3 gridSamplingDisk[20] = vec3[]
    vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
    vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
 );
-
-float ShadowCalculation(vec3 fragPos)
-{
-    vec3 fragToLight = fragPos - LightPosition_worldspace;
-    float currentDepth = length(fragToLight);
-    float shadow = 0.0;
-    float bias = 0.15;
-    int samples = 20;
-    float viewDistance = length(EyeDirection_cameraspace - fragPos);
-    float diskRadius = (1.0 + (viewDistance / 25.0f)) / 25.0;
-    for(int i = 0; i < samples; ++i)
-    {
-        float closestDepth = texture(shadowMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
-        closestDepth *= 25.0f;
-        if(currentDepth - bias > closestDepth)
-            shadow += 1.0;
-    }
-    shadow /= float(samples);    
-    return 1.0 - shadow;
-}
-
 
 void main(){
 	vec3 LightColor = vec3(1,1,1);
@@ -75,7 +53,22 @@ void main(){
 
 	float visibility=1.0;
 	if (useDepthTexture) {
-		visibility=ShadowCalculation(Position_worldspace);
+        vec3 fragToLight = Position_worldspace - LightPosition_worldspace;
+        float currentDepth = length(fragToLight);
+        float shadow = 0.0;
+        float bias = 0.05;
+        int samples = 20;
+        float viewDistance = length(EyeDirection_cameraspace - Position_worldspace);
+        float diskRadius = (1.0 + (viewDistance / 25.0f)) / 25.0;
+        for(int i = 0; i < samples; ++i)
+        {
+            float closestDepth = texture(shadowMap, fragToLight + offsets[i] * diskRadius).r;
+            closestDepth *= 25.0f;
+            if(currentDepth - bias > closestDepth)
+                shadow += 1.0;
+        }
+        shadow /= float(samples);    
+        visibility = 1.0 - shadow;
 	}
 
 	color = 
