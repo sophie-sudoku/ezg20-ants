@@ -62,13 +62,14 @@ int main(void)
 	
 	std::ifstream infile("resolution.cfg");
 	std::string line;
-
 	std::getline(infile, line);
 	float viewportWidth = std::stof(line.substr(6));
 	std::getline(infile, line);
 	float viewportHeight = std::stof(line.substr(7));
 	std::getline(infile, line);
 	float FoV = std::stof(line.substr(4));
+	std::getline(infile, line);
+	bool fullscreen = std::stoi(line.substr(11));
 
 
 	window = glfwCreateWindow(viewportWidth, viewportHeight, "Ants", glfwGetPrimaryMonitor(), NULL);
