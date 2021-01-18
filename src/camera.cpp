@@ -10,7 +10,7 @@ using namespace glm;
 #include "camera.hpp"
 
 
-void Camera::setupCamera(bool userControl) {
+void Camera::setupCamera(float FoV, bool userControl) {
 
 	// Initial position : on +Z
 	this->position = glm::vec3(14.75, 9, 25);
@@ -19,7 +19,7 @@ void Camera::setupCamera(bool userControl) {
 	// Initial vertical angle : none
 	this->verticalAngle = 6.06f;
 	// Initial Field of View
-	this->FoV = 45.0f;
+	this->FoV = FoV;
 
 
 	if (userControl) {

@@ -32,7 +32,7 @@ private:
 	vec3 finalDirection;
 
 public:
-	void setupCamera(bool userControl);
+	void setupCamera(float FoV, bool userControl);
 	bool updateCamera(float dt);
 	void computeMatricesFromInputs(float dt);
 	mat4 getViewMatrix();

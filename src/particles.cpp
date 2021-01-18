@@ -79,7 +79,6 @@ void ParticleSystem::Draw(
     glm::mat4 ViewMatrix
 )
 {
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glUseProgram(this->programID);
 
     glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
@@ -102,6 +101,7 @@ void ParticleSystem::Draw(
     glVertexAttribDivisor(1, 1);
 
     // Draw
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, this->particles.size()); // 3 indices starting at 0 -> 1 triangle
 
 
