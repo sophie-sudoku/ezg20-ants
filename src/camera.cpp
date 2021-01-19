@@ -246,12 +246,12 @@ void Camera::setupCamera(float FoV, bool userControl) {
 		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
 
 
-		positions.push_back(vec3(-2.582639, 2.009217, 4.647204));
+		positions.push_back(vec3(-2.582639, 2.509217, 4.647204));
 		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
 		
 		intervals.push_back(0.004);
 
-		positions.push_back(vec3(-2.582639, 3.009217, 4.647204));
+		positions.push_back(vec3(-2.582639, 3.259217, 4.647204));
 		angles.push_back(vec3(-2.375022, 4.760033, this->FoV));
 		
 		intervals.push_back(0.004);

@@ -99,6 +99,7 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
 
 	// Create and compile our GLSL program from the shaders
 	GLuint standardProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
@@ -376,10 +377,12 @@ int main(void)
 		);
 
 		//Update Particles and Draw Fire
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		ps->Update(dt);
 		ps->Draw(
 			ProjectionMatrix,
 			ViewMatrix);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// Swap buffers
 		glfwSwapBuffers(window);

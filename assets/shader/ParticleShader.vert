@@ -12,10 +12,8 @@ void main(){
 
     lifetime = position_lifetime.w;
     float particleSize = 0.01;
-    if (lifetime > 1) {
-        //mostly so white particles shine brighter in the middle of the fire without affecting the others too much
-        particleSize = min(0.01 * lifetime, 0.015);
-    }
+    if (lifetime > 0.5) 
+        particleSize = min(0.02 * lifetime, 0.04);
 
     //View Projection Adjustments
     vec4 position_viewspace = V * vec4( position_lifetime.xyz, 1 );

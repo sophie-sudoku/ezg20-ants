@@ -74,6 +74,8 @@ ParticleSystem::~ParticleSystem()
 }
 
 
+
+
 void ParticleSystem::Draw(
     glm::mat4 ProjectionMatrix,
     glm::mat4 ViewMatrix
@@ -101,7 +103,6 @@ void ParticleSystem::Draw(
     glVertexAttribDivisor(1, 1);
 
     // Draw
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, this->particles.size()); // 3 indices starting at 0 -> 1 triangle
 
 
@@ -117,12 +118,12 @@ void ParticleSystem::Draw(
 void ParticleSystem::Update(const float dt)
 {
 
-    const float dtscalar = 2; //speed adjustment of flame animation
+    const float dtscalar = 1.5; //speed adjustment of flame animation
 
     for (uint i = 0; i < this->particles.size(); ++i)
     {
         // subtract from the particles lifetime
-        this->particles[i].lifetime -= dt * dtscalar;
+        this->particles[i].lifetime -= dt * dtscalar/2;
 
         // if the lifetime is below 0 respawn the particle
         if (this->particles[i].lifetime <= 0.0f)
@@ -130,13 +131,16 @@ void ParticleSystem::Update(const float dt)
             SpawnParticle(i);
         }
 
-        // move the particle down depending on the delta time
+        // move the particle up depending on the delta time
         this->particles[i].position += dt * dtscalar * this->particles[i].velocity;
+        this->particles[i].velocity.y += dt * dtscalar * 0.001;
 
         // update the position buffer
         UpdatePosition(i);
     }
 }
+
+
 
 void ParticleSystem::SpawnParticle(unsigned int particleID) {
     // give every particle a random position in a XZ circle around the spawn pos using pythagorean
@@ -147,7 +151,7 @@ void ParticleSystem::SpawnParticle(unsigned int particleID) {
     if (particleID % 2) {
         this->particles[particleID].position = vec3(
             spawnPosition.x + adjacent,
-            spawnPosition.y + RandomNumber(-0.3 * (rand()%2), 0.5),
+            spawnPosition.y + RandomNumber(-0.4 * (rand()%2), 0.5),
             spawnPosition.z + opposite
         );
     }
@@ -161,7 +165,7 @@ void ParticleSystem::SpawnParticle(unsigned int particleID) {
 
     // give every particle a lifetime based on distance to center
     float distanceToEdge = spawnRadius - sqrt(opposite * opposite + adjacent * adjacent);
-    this->particles[particleID].lifetime = RandomNumber(distanceToEdge * 1.0f, distanceToEdge * 4.0f + 0.8);
+    this->particles[particleID].lifetime = RandomNumber(distanceToEdge, distanceToEdge * 2.0f + 0.8);
     
 
     // give every particle a random velocity using 2^x to get a few outliers
@@ -177,10 +181,12 @@ void ParticleSystem::SpawnParticle(unsigned int particleID) {
     //2^8 = 128 / 400 gives range from 1/400 to about 1/4
     this->particles[particleID].velocity = vec3(
         xmult * pow(2,RandomNumber(0,8)) / 400,
-        RandomNumber(0.1,1),
+        RandomNumber(-0.15,1.52),
         zmult * pow(2, RandomNumber(0,8)) / 400
     );
 }
+
+
 
 void ParticleSystem::UpdatePosition(unsigned int particleID) {
     this->particle_position_buffer_data[particleID * 4 + 0] = this->particles[particleID].position[0];
