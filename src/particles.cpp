@@ -16,7 +16,7 @@ ParticleSystem::ParticleSystem(
     unsigned int maxParticles
 )
 {
-    //set global variables
+    // Set global variables
     this->spawnPosition = vec3(
         -2.58,
          0.46,
@@ -25,13 +25,13 @@ ParticleSystem::ParticleSystem(
     this->spawnRadius = 1.2;
 
 
-    //setup shaders
+    // Setup shaders
     this->programID = programID;
     this->ViewMatrix = glGetUniformLocation(programID, "V");
     this->ProjectionMatrix = glGetUniformLocation(programID, "P");
 
 
-    //Create Particle vertices, generate & fill buffer
+    // Create Particle vertices, generate & fill buffer
     static const GLfloat particle_vertex_buffer_data[] = {
          0.0f, 0.0f, 0.0f,
          1.0f, 0.0f, 0.0f,
@@ -44,7 +44,7 @@ ParticleSystem::ParticleSystem(
     glBufferData(GL_ARRAY_BUFFER, sizeof(particle_vertex_buffer_data), particle_vertex_buffer_data, GL_STATIC_DRAW);
 
 
-    //Create Particles, generate & fill position buffer
+    // Create Particles, generate & fill position buffer
     this->particles.resize(maxParticles);
     particle_position_buffer_data = new float[maxParticles * 4];
 
@@ -59,7 +59,7 @@ ParticleSystem::ParticleSystem(
     glBufferData(GL_ARRAY_BUFFER, maxParticles * 4 * sizeof(float), particle_position_buffer_data, GL_DYNAMIC_DRAW);
 
 
-    //go through update a couple times so it looks natural on start
+    // Go through update a couple times so it looks natural on start
     for (unsigned i = 0; i < 200; i++) {
         Update(0.01);
     }
@@ -81,22 +81,24 @@ void ParticleSystem::Draw(
     glm::mat4 ViewMatrix
 )
 {
+    // Use Blending
     glUseProgram(this->programID);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
     glUniformMatrix4fv(this->ProjectionMatrix, 1, GL_FALSE, &ProjectionMatrix[0][0]);
 
 
-    //Update Position Buffer
+    // Update Position Buffer
     glBindBuffer(GL_ARRAY_BUFFER, this->positionBuffer);
     glBufferSubData(GL_ARRAY_BUFFER, 0, this->particles.size() * 4 * sizeof(float), this->particle_position_buffer_data);
 
-    //Buffer Vertices
+    // Buffer Vertices
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    //Buffer positions
+    // Buffer positions
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, this->positionBuffer);
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -106,7 +108,7 @@ void ParticleSystem::Draw(
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, this->particles.size()); // 3 indices starting at 0 -> 1 triangle
 
 
-    //Resets & Disables
+    // Resets & Disables
     glVertexAttribDivisor(1, 0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -178,7 +180,7 @@ void ParticleSystem::SpawnParticle(unsigned int particleID) {
     if (rand() % 2) {
         zmult = -1;
     }
-    //2^8 = 128 / 400 gives range from 1/400 to about 1/4
+    // 2^8 = 128 / 400 gives range from 1/400 to about 1/4
     this->particles[particleID].velocity = vec3(
         xmult * pow(2,RandomNumber(0,8)) / 400,
         RandomNumber(-0.15,1.52),

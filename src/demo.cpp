@@ -52,14 +52,8 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	// Open a window and create its OpenGL context
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 	
+	// Read in resolution.cfg
 	std::ifstream infile("resolution.cfg");
 	std::string line;
 	std::getline(infile, line);
@@ -71,6 +65,12 @@ int main(void)
 	std::getline(infile, line);
 	bool fullscreen = std::stoi(line.substr(11));
 
+	// Open a window and create its OpenGL context
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
 	window = glfwCreateWindow(viewportWidth, viewportHeight, "Ants", glfwGetPrimaryMonitor(), NULL);
 	if (window == NULL) {
@@ -81,6 +81,7 @@ int main(void)
 	}
 	glfwMakeContextCurrent(window);
 
+	// Hide mouse cursor, get keys for user control if set
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
@@ -377,12 +378,10 @@ int main(void)
 		);
 
 		//Update Particles and Draw Fire
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		ps->Update(dt);
 		ps->Draw(
 			ProjectionMatrix,
 			ViewMatrix);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// Swap buffers
 		glfwSwapBuffers(window);

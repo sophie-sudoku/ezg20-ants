@@ -33,6 +33,7 @@ private:
 
 public:
 	void setupCamera(float FoV, bool userControl);
+	void setupCameraPath();
 	bool updateCamera(float dt);
 	void computeMatricesFromInputs(float dt);
 	mat4 getViewMatrix();

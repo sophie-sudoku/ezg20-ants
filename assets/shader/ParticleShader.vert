@@ -12,7 +12,7 @@ void main(){
 
     lifetime = position_lifetime.w;
     float particleSize = 0.01;
-    if (lifetime > 0.5) 
+    if (lifetime > 0.5)  //adjust particlesize above threshold so the yellow "glows" more
         particleSize = min(0.02 * lifetime, 0.04);
 
     //View Projection Adjustments
