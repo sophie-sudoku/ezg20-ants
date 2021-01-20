@@ -83,6 +83,10 @@ void ParticleSystem::Draw(
 {
     // Use Blending
     glUseProgram(this->programID);
+    GLint blendSrc;
+    GLint blendDst;
+    glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrc);
+    glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDst);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
@@ -112,7 +116,7 @@ void ParticleSystem::Draw(
     glVertexAttribDivisor(1, 0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(blendSrc, blendDst);
 }
 
 
