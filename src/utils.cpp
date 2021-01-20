@@ -1,20 +1,9 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <string>
-
 #include <glm/glm.hpp>
 
-#include <stdio.h> 
-#include <string.h> 
+#include <string>
+#include <sstream>
+#include <vector>
 
-#include <string>       // std::string
-#include <sstream>      // std::stringstream
-
-using namespace std;
-
-char seps[] = ",";
-char *token, *next_token;
 
 
 std::vector<std::string> splitString(std::string input) {
@@ -41,7 +30,7 @@ glm::mat4 makeMat4(std::string input) {
     std::vector<std::string> objects = splitString(input);
 
     //seperate into vectors of 4
-    for (int i = 0; i < objects.size() / 4; i+=4) {
+    for (int i = 0; i < objects.size(); i+=4) {
         result[i/4] = glm::vec4(
             std::stof(objects[i]), 
             std::stof(objects[i + 1]), 

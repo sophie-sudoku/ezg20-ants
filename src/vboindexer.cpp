@@ -5,7 +5,7 @@
 
 #include "vboindexer.hpp"
 
-#include <string.h> // for memcmp
+#include <string.h>
 
 
 // Returns true iif v1 can be considered equal to v2
