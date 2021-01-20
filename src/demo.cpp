@@ -38,8 +38,6 @@ using namespace glm;
 int main(void)
 {
 
-	bool userControl = false;
-
 	// Initialise GLFW
 	if (!glfwInit())
 	{
@@ -64,15 +62,18 @@ int main(void)
 	float FoV = std::stof(line.substr(4));
 	std::getline(infile, line);
 	bool fullscreen = std::stoi(line.substr(11));
+	std::getline(infile, line);
+	bool userControl = std::stoi(line.substr(12));
+
 
 	// Open a window and create its OpenGL context
-	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-	glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	if (fullscreen) {
+		window = glfwCreateWindow(viewportWidth, viewportHeight, "Ants", glfwGetPrimaryMonitor(), NULL);
+	}
+	else {
+		window = glfwCreateWindow(viewportWidth, viewportHeight, "Ants", NULL, NULL);
+	}
 
-	window = glfwCreateWindow(viewportWidth, viewportHeight, "Ants", glfwGetPrimaryMonitor(), NULL);
 	if (window == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		getchar();
@@ -80,6 +81,7 @@ int main(void)
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+
 
 	// Hide mouse cursor, get keys for user control if set
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
