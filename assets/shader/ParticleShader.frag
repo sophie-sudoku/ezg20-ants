@@ -2,10 +2,11 @@
 
 in float lifetime;
 
-out vec3 color;
+out vec4 color;
 
 void main() {
-   color = vec3(lifetime, //makes it red, then turns black
+   color = vec4(lifetime, //makes it red, then turns black
    lifetime -0.7,		//makes it yellow, then orange, then red
-   0);
+   0,
+   1);
 }

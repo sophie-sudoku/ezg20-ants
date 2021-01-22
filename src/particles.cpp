@@ -16,6 +16,7 @@ ParticleSystem::ParticleSystem(
     unsigned int maxParticles
 )
 {
+
     // Set global variables
     this->spawnPosition = vec3(
         -2.58,
@@ -63,6 +64,8 @@ ParticleSystem::ParticleSystem(
     for (unsigned i = 0; i < 200; i++) {
         Update(0.01);
     }
+
+    glEnable(GL_BLEND);
 }
 
 
@@ -87,7 +90,6 @@ void ParticleSystem::Draw(
     GLint blendDst;
     glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrc);
     glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDst);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
     glUniformMatrix4fv(this->ProjectionMatrix, 1, GL_FALSE, &ProjectionMatrix[0][0]);
@@ -109,14 +111,14 @@ void ParticleSystem::Draw(
     glVertexAttribDivisor(1, 1);
 
     // Draw
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, this->particles.size()); // 3 indices starting at 0 -> 1 triangle
 
-
     // Resets & Disables
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glVertexAttribDivisor(1, 0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
-    glBlendFunc(blendSrc, blendDst);
 }
 
 

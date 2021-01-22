@@ -6,7 +6,7 @@ in vec3 Normal_cameraspace;
 in vec3 EyeDirection_cameraspace;
 in vec3 LightDirection_cameraspace;
 
-out vec3 color;
+out vec4 color;
 
 uniform sampler2D myTextureSampler;
 uniform sampler2D myTextureSamplerOpacity;
@@ -72,7 +72,7 @@ void main(){
 	}
 
 	color = 
-		MaterialAmbientColor +
+		vec4(vec3(MaterialAmbientColor +
 		visibility * MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
-		visibility * MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+		visibility * MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance)), 1);
 }
