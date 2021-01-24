@@ -3,26 +3,39 @@ C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(71,44): warning C4244: 'argu
 C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(71,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(74,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(74,29): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(220,13): warning C4244: 'initializing': conversion from 'double' to 'glm::uint', possible loss of data
-C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(244,57): warning C4305: 'argument': truncation from 'double' to '_Ty'
+C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(219,13): warning C4244: 'initializing': conversion from 'double' to 'glm::uint', possible loss of data
+C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(243,57): warning C4305: 'argument': truncation from 'double' to '_Ty'
           with
           [
               _Ty=float
           ]
-C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(255,38): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(254,38): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
-C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(331,88): warning C4244: '-=': conversion from 'double' to 'T', possible loss of data
+C:\Users\kecks\source\repos\ezg20-ants\src\demo.cpp(330,88): warning C4244: '-=': conversion from 'double' to 'T', possible loss of data
           with
           [
               T=float
           ]
+  particles.cpp
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(26,28): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(65,20): warning C4305: 'argument': truncation from 'double' to 'const float'
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(146,63): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(164,49): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(171,49): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(178,95): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\kecks\source\repos\ezg20-ants\src\particles.cpp(194,32): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
 soil2-debug.lib(SOIL2.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:ICF' specification
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
 LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'glew32s.lib(glew.obj)' or at ''; linking object as if no debug info
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\kecks\source\repos\ezg20-ants\Release\vc120.pdb'; linking object as if no debug info
 soil2-debug.lib(SOIL2.obj) : warning LNK4099: PDB '' was not found with 'soil2-debug.lib(SOIL2.obj)' or at ''; linking object as if no debug info
 soil2-debug.lib(image_DXT.obj) : warning LNK4099: PDB 'soil2-static-lib.pdb' was not found with 'soil2-debug.lib(image_DXT.obj)' or at 'C:\Users\kecks\source\repos\ezg20-ants\Release\soil2-static-lib.pdb'; linking object as if no debug info
 soil2-debug.lib(image_helper.obj) : warning LNK4099: PDB 'soil2-static-lib.pdb' was not found with 'soil2-debug.lib(image_helper.obj)' or at 'C:\Users\kecks\source\repos\ezg20-ants\Release\soil2-static-lib.pdb'; linking object as if no debug info

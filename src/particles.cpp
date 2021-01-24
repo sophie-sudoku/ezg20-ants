@@ -111,11 +111,12 @@ void ParticleSystem::Draw(
     glVertexAttribDivisor(1, 1);
 
     // Draw
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, this->particles.size()); // 3 indices starting at 0 -> 1 triangle
 
     // Resets & Disables
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_BLEND);
     glVertexAttribDivisor(1, 0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

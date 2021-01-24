@@ -102,7 +102,6 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
 
 	// Create and compile our GLSL program from the shaders
 	GLuint standardProgram = LoadShaders("assets/shader/StandardShading.vert", "assets/shader/StandardShading.frag");
