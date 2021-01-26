@@ -52,7 +52,7 @@ ParticleSystem::ParticleSystem(
     for (uint i = 0; i < maxParticles; ++i)
     {
         SpawnParticle(i);
-        UpdatePosition(i);
+        UpdatePositionBuffer(i);
     }
 
     glGenBuffers(1, &this->positionBuffer);
@@ -65,7 +65,6 @@ ParticleSystem::ParticleSystem(
         Update(0.01);
     }
 
-    glEnable(GL_BLEND);
 }
 
 
@@ -84,16 +83,10 @@ void ParticleSystem::Draw(
     glm::mat4 ViewMatrix
 )
 {
-    // Use Blending
+    // Use Particle Program
     glUseProgram(this->programID);
-    GLint blendSrc;
-    GLint blendDst;
-    glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrc);
-    glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDst);
-
     glUniformMatrix4fv(this->ViewMatrix, 1, GL_FALSE, &ViewMatrix[0][0]);
     glUniformMatrix4fv(this->ProjectionMatrix, 1, GL_FALSE, &ProjectionMatrix[0][0]);
-
 
     // Update Position Buffer
     glBindBuffer(GL_ARRAY_BUFFER, this->positionBuffer);
@@ -145,7 +138,7 @@ void ParticleSystem::Update(const float dt)
         this->particles[i].velocity.y += dt * dtscalar * 0.001;
 
         // update the position buffer
-        UpdatePosition(i);
+        UpdatePositionBuffer(i);
     }
 }
 
@@ -157,10 +150,11 @@ void ParticleSystem::SpawnParticle(unsigned int particleID) {
     float oppositeMax = sqrt(spawnRadius * spawnRadius - adjacent * adjacent);
     float opposite = RandomNumber(-oppositeMax, oppositeMax);
 
-    if (particleID % 2) {
+    // add adjacent/opposite to x/z based on coinflip
+    if (rand() % 2) {
         this->particles[particleID].position = vec3(
             spawnPosition.x + adjacent,
-            spawnPosition.y + RandomNumber(-0.4 * (rand()%2), 0.5),
+            spawnPosition.y + RandomNumber(-0.4 * (rand()%2), 0.5), // * rand()/2 makes every second particle start at 0
             spawnPosition.z + opposite
         );
     }
@@ -197,7 +191,7 @@ void ParticleSystem::SpawnParticle(unsigned int particleID) {
 
 
 
-void ParticleSystem::UpdatePosition(unsigned int particleID) {
+void ParticleSystem::UpdatePositionBuffer(unsigned int particleID) {
     this->particle_position_buffer_data[particleID * 4 + 0] = this->particles[particleID].position[0];
     this->particle_position_buffer_data[particleID * 4 + 1] = this->particles[particleID].position[1];
     this->particle_position_buffer_data[particleID * 4 + 2] = this->particles[particleID].position[2];

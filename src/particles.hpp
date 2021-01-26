@@ -47,11 +47,10 @@ public:
         glm::mat4 ViewMatrix
     );
     void Update(const float dt);
-    void setUniformParticleSize(const float particleSize);
 
 private:
     void ParticleSystem::SpawnParticle(unsigned int particleID);
-    void ParticleSystem::UpdatePosition(unsigned int particleID);
+    void ParticleSystem::UpdatePositionBuffer(unsigned int particleID);
     float RandomNumber(float Min, float Max);
 
 };
