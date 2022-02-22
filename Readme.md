@@ -1,3 +1,10 @@
+# Application
+This application is a demonstration of realtime rendering of a test scene,
+which displays ants sitting around a campfire
+![Alt text](screenshot.png?raw=true "Title")
+
+It contains the implementation of shadows and a particle system
+
 # Configuration of resolution.cfg
 
 You can configure your own resolution and fov in the resolution.cfg like this:
